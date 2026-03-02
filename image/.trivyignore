@@ -24,15 +24,34 @@ CVE-2026-0861
 # sqlite: integer overflow in SQLite; no fixed Bookworm package yet
 CVE-2025-7458
 
-# npm transitive deps — npm 11.11.0's vendored bundle pins minimatch 10.2.2,
-# while CVE-2026-27903 / CVE-2026-27904 require 10.2.3+.
-# Can't patch in-place because npm's package.json references private
-# @npmcli packages not on the public registry.
+# npm transitive deps — npm 11.11.0 vendors glob 10.4.5,
+# minimatch 10.2.2 / 9.0.5, and tar 6.2.1 / 7.4.3.
+# Fixes require glob >= 10.5.0, minimatch >= 10.2.3 / 9.0.7,
+# and tar >= 7.5.8, but npm bundles private @npmcli packages
+# that cannot be patched independently.
 # Mitigated: read-only rootfs, cap-drop ALL, no-new-privileges.
-# Reassess on the next npm release that bundles minimatch >= 10.2.3.
+# Reassess on the next npm release that updates these vendored deps.
 
-# minimatch: glob parser vulnerability (fixed in 10.2.3 / 9.0.7)
+# glob: command injection via malicious pattern (fixed in 10.5.0 / 11.1.0)
+CVE-2025-64756
+
+# minimatch: DoS via unbounded backtracking (fixed in 10.2.3 / 9.0.7)
 CVE-2026-27903
 
-# minimatch: glob parser vulnerability variant (fixed in 10.2.3 / 9.0.7)
+# minimatch: DoS via catastrophic backtracking (fixed in 10.2.3 / 9.0.7)
 CVE-2026-27904
+
+# minimatch: DoS via specially crafted pattern (fixed in 9.0.6)
+CVE-2026-26996
+
+# tar: arbitrary file overwrite and symlink attack (fixed in 7.5.3)
+CVE-2026-23745
+
+# tar: arbitrary file overwrite via crafted archive (fixed in 7.5.4)
+CVE-2026-23950
+
+# tar: arbitrary file creation via path traversal (fixed in 7.5.7)
+CVE-2026-24842
+
+# tar: arbitrary file read/write via symlink (fixed in 7.5.8)
+CVE-2026-26960
