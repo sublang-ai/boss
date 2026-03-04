@@ -408,5 +408,84 @@ memory = "2g"
     it('OpenCode log has no permission prompts', () => {
       expect(opencodeLog).not.toMatch(PERMISSION_PATTERNS);
     });
+
+    // ── Verification #10–13: Agent global instruction file awareness ───
+    // Smoke tests: each agent is asked a question whose correct answer
+    // depends on loading its global instruction file.  Provider failures
+    // are retried once and then soft-skipped (file-existence in
+    // start-stop.test.ts is the primary contract test).
+
+    const PROVIDER_TRANSIENT = /\btimeout\b|timed out|etimedout|econnrefused|econnreset|\b503\b|\b429\b|quota|rate.limit|\bunavailable\b|high demand|retrying with backoff|fetch failed/i;
+    const INSTR_MAX_ATTEMPTS = 2;
+
+    function instrPrompt(): { ok: string; bad: string; prompt: string } {
+      const id = Date.now().toString(36);
+      const ok = `SUDO_NOT_REQUIRED_${id}`;
+      const bad = `SUDO_REQUIRED_${id}`;
+      const prompt =
+        `Return exactly one token: ${ok} if sudo is NOT required, or ${bad} if sudo IS required. Which is correct for pip install in this environment?`;
+      return { ok, bad, prompt };
+    }
+
+    function runInstrTest(
+      label: string,
+      workspace: string,
+      buildCmd: (prompt: string) => string,
+      opts?: { needsGit?: boolean },
+    ): void {
+      containerExec(['mkdir', '-p', `/home/boss/${workspace}`]);
+      if (opts?.needsGit) {
+        containerExec(['git', '-C', `/home/boss/${workspace}`, 'init', '-q']);
+      }
+      try {
+        for (let attempt = 1; attempt <= INSTR_MAX_ATTEMPTS; attempt++) {
+          const { ok, bad, prompt } = instrPrompt();
+          const tokenRe = new RegExp(`(SUDO_(?:NOT_)?REQUIRED_${ok.split('_').pop()})`, 'g');
+          const agent = runAgent(workspace, buildCmd(prompt), 60_000);
+          dumpAgentLog(`${label} attempt ${attempt}`, agent.log);
+          if (agent.exitCode !== 0 && PROVIDER_TRANSIENT.test(agent.log)) {
+            if (attempt < INSTR_MAX_ATTEMPTS) continue;
+            console.warn(`Soft-skipping ${label} instruction smoke test: transient provider error.`);
+            return;
+          }
+          if (agent.exitCode !== 0) {
+            if (attempt < INSTR_MAX_ATTEMPTS) continue;
+            expect.unreachable(diagnoseAgent(agent.exitCode, agent.log));
+          }
+          // Extract the last token match — skips any prompt echo (which
+          // comes first) and captures only the model's answer.
+          const matches = agent.log.match(tokenRe);
+          const answer = matches?.[matches.length - 1];
+          if (answer === ok) return;
+          if (answer === bad) {
+            // Agent actively answered wrong — real regression, hard-fail.
+            expect(answer, `${label}: agent answered ${bad} (instructions not loaded?)`).toBe(ok);
+          }
+          // No token in output (e.g., empty response, free-form text) —
+          // provider/model reliability issue, retry then soft-skip.
+          if (attempt < INSTR_MAX_ATTEMPTS) continue;
+          console.warn(`Soft-skipping ${label} instruction smoke test: model produced no token.`);
+          return;
+        }
+      } finally {
+        try { containerExec(['rm', '-rf', `/home/boss/${workspace}`]); } catch {}
+      }
+    }
+
+    it('Claude Code loads global instruction file', () => {
+      runInstrTest('claude', 'test-instr-claude', (p) => `claude -p "${p}"`);
+    });
+
+    it('Codex CLI loads global instruction file', () => {
+      runInstrTest('codex', 'test-instr-codex', (p) => `codex exec "${p}"`, { needsGit: true });
+    });
+
+    it('Gemini CLI loads global instruction file', () => {
+      runInstrTest('gemini', 'test-instr-gemini', (p) => `gemini --yolo -p "${p}"`);
+    });
+
+    it('OpenCode loads global instruction file', () => {
+      runInstrTest('opencode', 'test-instr-opencode', (p) => `opencode run -m moonshotai-cn/kimi-k2.5 "${p}"`, { needsGit: true });
+    });
   },
 );

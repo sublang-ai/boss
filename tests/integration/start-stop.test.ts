@@ -222,6 +222,24 @@ describe('boss start/stop (integration)', { timeout: 120_000, sequential: true }
     }).toThrow();
   });
 
+  // SBT-008: agent global instruction files exist at correct container paths
+  it('provisions agent global instruction files (SBT-008)', () => {
+    const instructionFiles: Record<string, string> = {
+      '/home/boss/.claude/CLAUDE.md': 'Environment: package installation',
+      '/home/boss/.codex/AGENTS.md': 'Environment: package installation',
+      '/home/boss/.gemini/GEMINI.md': 'Environment: package installation',
+      '/home/boss/.config/opencode/AGENTS.md': 'Environment: package installation',
+    };
+
+    for (const [path, expectedContent] of Object.entries(instructionFiles)) {
+      const content = podmanExecSync(['exec', TEST_CONTAINER, 'cat', path]);
+      expect(content).toContain(expectedContent);
+      expect(content).toContain('No `sudo` required');
+      expect(content).toContain('mise use -g');
+      expect(content).toContain('unset PIP_USER');
+    }
+  });
+
   it('seeds missing defaults and preserves existing files across restart', async () => {
     const marker = '/home/boss/.config/boss/default-seed.marker';
 
