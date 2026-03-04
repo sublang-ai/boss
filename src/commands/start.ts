@@ -17,10 +17,126 @@ import {
 } from '../utils/podman.js';
 import { readConfig, resolveSshKeyPaths, uniqueSshKeyNames, ENV_PATH } from '../utils/config.js';
 
+const MISE_STATE_FILE = '.boss-mise-reconcile.state';
+const MISE_PROGRESS_FILE = '.boss-mise-reconcile.in-progress';
+const MISE_STATE_POLL_INTERVAL_MS = 200;
+const MISE_STATE_POLL_TIMEOUT_MS = 300_000;
+const MISE_STATE_IN_PROGRESS = '__BOSS_MISE_STATE_IN_PROGRESS__';
+
+interface MiseStateProbeResult {
+  state: MiseReconcileState | null;
+  timedOut: boolean;
+}
+
+export interface MiseReconcileState {
+  status: 'ok' | 'error' | 'skipped' | string;
+  fingerprint?: string;
+  failedStep?: string;
+  errorClass?: string;
+  errorMessage?: string;
+  shouldWarn?: boolean;
+  updatedAtEpoch?: number;
+}
+
 /** Resolve OpenCode auth file honoring XDG_DATA_HOME. */
 export function opencodeAuthPath(): string {
   const dataHome = process.env.XDG_DATA_HOME ?? join(homedir(), '.local', 'share');
   return join(dataHome, 'opencode', 'auth.json');
+}
+
+function parseKeyValueState(content: string): Record<string, string> {
+  const result: Record<string, string> = {};
+  for (const line of content.split('\n')) {
+    const trimmed = line.trim();
+    if (!trimmed) continue;
+    const sep = trimmed.indexOf('=');
+    if (sep <= 0) continue;
+    const key = trimmed.slice(0, sep);
+    const value = trimmed.slice(sep + 1);
+    result[key] = value;
+  }
+  return result;
+}
+
+export function parseMiseReconcileState(content: string): MiseReconcileState | null {
+  const kv = parseKeyValueState(content);
+  if (!kv.status) return null;
+
+  const updatedAtEpoch = Number.parseInt(kv.updated_at_epoch ?? '', 10);
+  const shouldWarn = kv.should_warn === '1' ? true : kv.should_warn === '0' ? false : undefined;
+  return {
+    status: kv.status,
+    fingerprint: kv.fingerprint,
+    failedStep: kv.failed_step,
+    errorClass: kv.error_class,
+    errorMessage: kv.error_message,
+    shouldWarn,
+    updatedAtEpoch: Number.isFinite(updatedAtEpoch) ? updatedAtEpoch : undefined,
+  };
+}
+
+export function formatMiseWarning(state: MiseReconcileState): string | null {
+  if (state.status !== 'error') return null;
+  if (state.shouldWarn === false) return null;
+  const step = state.failedStep ?? 'unknown-step';
+  const klass = state.errorClass ?? 'unknown';
+  const message = state.errorMessage ?? 'unknown error';
+  return `Warning: mise reconciliation failed (${step}/${klass}): ${message}`;
+}
+
+async function readEntrypointMiseState(containerName: string): Promise<MiseStateProbeResult> {
+  const probeScript = [
+    'state_home="${XDG_STATE_HOME:-/home/boss/.local/state}"',
+    `state_file="$state_home/${MISE_STATE_FILE}"`,
+    `progress_file="$state_home/${MISE_PROGRESS_FILE}"`,
+    'if [ -f "$progress_file" ]; then',
+    `  printf '%s\\n' '${MISE_STATE_IN_PROGRESS}'`,
+    '  exit 0',
+    'fi',
+    'if [ -f "$state_file" ]; then',
+    '  cat "$state_file"',
+    'fi',
+  ].join('\n');
+
+  const deadline = Date.now() + MISE_STATE_POLL_TIMEOUT_MS;
+  while (Date.now() < deadline) {
+    const { stdout } = await podmanExec(['exec', containerName, 'sh', '-c', probeScript]);
+    const trimmed = stdout.trim();
+    if (!trimmed) return { state: null, timedOut: false };
+    if (trimmed === MISE_STATE_IN_PROGRESS) {
+      await new Promise(r => setTimeout(r, MISE_STATE_POLL_INTERVAL_MS));
+      continue;
+    }
+    return { state: parseMiseReconcileState(trimmed), timedOut: false };
+  }
+
+  console.warn('Warning: timed out waiting for mise reconciliation state from entrypoint.');
+  return { state: null, timedOut: true };
+}
+
+async function reconcileMiseLegacy(containerName: string): Promise<void> {
+  // Guard: skip when mise is absent (e.g., pre-IR-008 images).
+  let hasMise = false;
+  try {
+    await podmanExec(['exec', containerName, 'sh', '-c', 'command -v mise >/dev/null']);
+    hasMise = true;
+  } catch {
+    // mise not available — tools are managed directly in the image
+  }
+  if (!hasMise) return;
+
+  // Seed user-global mise config if absent (pre-IR-008 volumes lack it).
+  await podmanExec(['exec', containerName, 'sh', '-c',
+    'test -f ~/.config/mise/config.toml || { mkdir -p ~/.config/mise && touch ~/.config/mise/config.toml; }']);
+
+  try {
+    await podmanExec(['exec', containerName, 'mise', 'trust', '/etc/mise/config.toml']);
+    await podmanExec(['exec', containerName, 'mise', 'trust', '/home/boss/.config/mise/config.toml']);
+    // --locked: use the image's lockfile read-only (rootfs is read-only at runtime).
+    await podmanExec(['exec', containerName, 'mise', 'install', '--locked']);
+  } catch (miseErr) {
+    console.warn(`Warning: mise reconciliation failed: ${podmanErrorMessage(miseErr)}`);
+  }
 }
 
 export async function startCommand(): Promise<void> {
@@ -99,32 +215,21 @@ export async function startCommand(): Promise<void> {
     // Reconcile user-local tool directory (survives volume overlay on upgrade)
     await podmanExec(['exec', name, 'mkdir', '-p', '/home/boss/.local/bin']);
 
-    // DR-004 §5: reconcile mise tools (idempotent; fast when tools are present).
-    // Guard: skip when mise is absent (e.g., pre-IR-008 images).
-    let hasMise = false;
     try {
-      await podmanExec(['exec', name, 'sh', '-c', 'command -v mise >/dev/null']);
-      hasMise = true;
+      const probe = await readEntrypointMiseState(name);
+      if (probe.state) {
+        const warning = formatMiseWarning(probe.state);
+        if (warning) console.warn(warning);
+      } else if (!probe.timedOut) {
+        // Backward compatibility for older images that do not write state.
+        await reconcileMiseLegacy(name);
+      }
     } catch {
-      // mise not available — tools are managed directly in the image
-    }
-    if (hasMise) {
-      // Seed user-global mise config if absent (pre-IR-008 volumes lack it).
-      await podmanExec(['exec', name, 'sh', '-c',
-        'test -f ~/.config/mise/config.toml || { mkdir -p ~/.config/mise && touch ~/.config/mise/config.toml; }']);
-      // DR-004 §5: reconcile mise tools. Non-fatal because tools are already
-      // on the volume (populated from the image on first use). Reconciliation
-      // only matters after image upgrades when the volume has stale artifacts.
+      // State read failures should not block startup.
       try {
-        await podmanExec(['exec', '-e', 'MISE_VERBOSE=1', name,
-          'mise', 'trust', '/etc/mise/config.toml']);
-        await podmanExec(['exec', '-e', 'MISE_VERBOSE=1', name,
-          'mise', 'trust', '/home/boss/.config/mise/config.toml']);
-        // --locked: use the image's lockfile read-only (rootfs is read-only at runtime).
-        await podmanExec(['exec', '-e', 'MISE_VERBOSE=1', name,
-          'mise', 'install', '--locked']);
-      } catch (miseErr) {
-        console.warn(`Warning: mise reconciliation failed: ${podmanErrorMessage(miseErr)}`);
+        await reconcileMiseLegacy(name);
+      } catch {
+        // Legacy fallback also failed to execute; continue startup.
       }
     }
 

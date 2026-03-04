@@ -80,7 +80,7 @@ across restarts.
 
 ### 5. Reconciliation policy on container start
 
-`boss start` shall run reconciliation:
+Container startup entrypoint shall run reconciliation:
 
 - `mise trust /etc/mise/config.toml` \[10]
 - `mise trust ~/.config/mise/config.toml` \[10]
@@ -97,6 +97,23 @@ Reconciliation is best-effort: failures are logged as warnings but do not
 abort container startup. On a fresh volume the tools are already present
 (populated from the image), so reconciliation only matters after image
 upgrades when the volume has stale artifacts.
+
+Entrypoint shall record reconciliation state at
+`$XDG_STATE_HOME/.boss-mise-reconcile.state`, including:
+
+- status (`ok`, `error`, `skipped`)
+- fingerprint derived from image version plus hashes of system/user mise
+  config+lock files
+- failed step + error class/message when status is `error`
+- `should_warn` flag for host-side surfacing
+
+When status is `error`, warning dedupe shall key on
+`(fingerprint, failed_step, error_class)` so repeated failures stay quiet on
+routine restarts, while image upgrades (fingerprint changes) re-surface
+warnings.
+
+`boss start` shall read this state file after container startup and surface the
+latest reconciliation warning when `should_warn=1`.
 
 ### 6. Locking and reproducibility
 

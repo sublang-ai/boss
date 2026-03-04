@@ -169,7 +169,13 @@ mise upgrade claude       # upgrade a specific tool
 
 ### Reconciliation on start
 
-Each `boss start` runs `mise install` inside the container, which reconciles installed tool artifacts against the declared manifests. This is idempotent and fast when tools are already present — it only downloads when artifacts are missing (e.g., after an image upgrade or volume migration).
+Container startup entrypoint runs mise reconciliation (`mise trust` + `mise install --locked`) before launching the main process.
+
+Reconciliation state is recorded at:
+
+`$XDG_STATE_HOME/.boss-mise-reconcile.state`
+
+`boss start` reads that state after container startup and surfaces only new failures. Duplicate failures with the same `(image-version, config+lock fingerprint, failed step, error class)` are deduped across routine restarts.
 
 ## Environment Variables
 

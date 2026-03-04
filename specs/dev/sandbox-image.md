@@ -264,3 +264,14 @@ stored value changes
 Where the image is built, baseline developer CLIs shall be preinstalled
 and executable on `PATH`: `gpg`, `tree`, `gh`, and `glab`
 ([DR-005](../decisions/005-package-manager-environment.md)).
+
+### SBD-034
+
+Where the image startup entrypoint runs, it shall perform mise
+reconciliation (`mise trust` on system and user configs, then
+`mise install --locked`) and record reconciliation state at
+`$XDG_STATE_HOME/.boss-mise-reconcile.state`.
+The state shall include a fingerprint derived from image version plus
+config+lock hashes, and a `should_warn` flag deduped by
+`(fingerprint, failed_step, error_class)`
+([DR-004 §5](../decisions/004-user-tool-provisioning.md#5-reconciliation-policy-on-container-start)).

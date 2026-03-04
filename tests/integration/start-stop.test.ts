@@ -250,6 +250,18 @@ describe('boss start/stop (integration)', { timeout: 120_000, sequential: true }
     expect(allLogs).toContain(`boss-image-version changed: ${prior} -> ${current}`);
   });
 
+  it('records mise reconciliation state in XDG state home', () => {
+    const state = podmanExecSync([
+      'exec',
+      TEST_CONTAINER,
+      'cat',
+      '/home/boss/.local/state/.boss-mise-reconcile.state',
+    ]);
+    expect(state).toContain('status=');
+    expect(state).toContain('fingerprint=');
+    expect(state).toContain('should_warn=');
+  });
+
   it('loads DR-005 interactive venv guard in bash and restores PIP_USER on venv exit', () => {
     const output = podmanExecSync([
       'exec',

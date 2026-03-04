@@ -68,11 +68,16 @@ via `/etc/ssh/ssh_config.d/boss.conf`
 
 ### LCD-007
 
-Where `boss start` launches the sandbox container, the command
-shall attempt `mise trust` on both `/etc/mise/config.toml` and
-`~/.config/mise/config.toml`, then `mise install --locked` inside
-the container after the container reaches the running state.
-Reconciliation is best-effort: failures are logged as warnings but
-do not abort startup (tools are already present on fresh volumes).
-This rehydrates missing installs after image upgrades or volume
-migrations ([DR-004 §5](../decisions/004-user-tool-provisioning.md)).
+Where the sandbox container entrypoint runs at startup, it shall
+attempt `mise trust` on both `/etc/mise/config.toml` and
+`~/.config/mise/config.toml`, then `mise install --locked`.
+Reconciliation is best-effort: failures do not abort startup.
+Entrypoint shall record reconciliation status at
+`$XDG_STATE_HOME/.boss-mise-reconcile.state` with a fingerprint
+derived from image version plus config+lock hashes, and set a
+`should_warn` flag for host-side surfacing. Warning dedupe shall key
+on `(fingerprint, failed_step, error_class)` so routine restarts stay
+quiet while image upgrades re-surface warnings.
+Where `boss start` launches the sandbox container, it shall read this
+state file after startup and surface the latest warning when
+`should_warn=1` ([DR-004 §5](../decisions/004-user-tool-provisioning.md)).

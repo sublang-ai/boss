@@ -5,6 +5,195 @@
 set -eu
 
 HOME="${HOME:-/home/boss}"
+state_home="${XDG_STATE_HOME:-${HOME}/.local/state}"
+mise_state="${state_home}/.boss-mise-reconcile.state"
+mise_in_progress="${state_home}/.boss-mise-reconcile.in-progress"
+
+prev_status=""
+prev_fingerprint=""
+prev_failed_step=""
+prev_error_class=""
+
+sys_cfg_hash=""
+sys_lock_hash=""
+user_cfg_hash=""
+user_lock_hash=""
+fingerprint=""
+
+mkdir -p "$state_home"
+: > "$mise_in_progress"
+trap 'rm -f "$mise_in_progress"' EXIT INT TERM HUP
+
+hash_file() {
+  file="$1"
+  if [ ! -f "$file" ]; then
+    printf 'missing'
+    return 0
+  fi
+  if command -v sha256sum >/dev/null 2>&1; then
+    sha256sum "$file" | awk '{print $1}'
+    return 0
+  fi
+  cksum "$file" | awk '{print $1}'
+}
+
+hash_text() {
+  text="$1"
+  if command -v sha256sum >/dev/null 2>&1; then
+    printf '%s' "$text" | sha256sum | awk '{print $1}'
+    return 0
+  fi
+  printf '%s' "$text" | cksum | awk '{print $1}'
+}
+
+last_non_empty_line() {
+  raw="$1"
+  line="$(printf '%s\n' "$raw" | tr '\r' '\n' | awk 'NF { last=$0 } END { print last }')"
+  if [ -z "$line" ]; then
+    line="$raw"
+  fi
+  printf '%s' "$line" | tr '\n' ' ' | sed 's/[[:space:]]\+/ /g; s/^ //; s/ $//'
+}
+
+classify_error() {
+  msg_lc="$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]')"
+  case "$msg_lc" in
+    *"could not resolve"*|*"timed out"*|*"timeout"*|*"temporary failure"*|*"connection refused"*|*"connection reset"*|*"tls"*|*"ssl"*|*"http 429"*|*"http 5"*|*"network"*)
+      printf 'network'
+      ;;
+    *"unauthorized"*|*"forbidden"*|*"authentication"*|*"auth"*)
+      printf 'auth'
+      ;;
+    *"lock"*|*"locked"*)
+      printf 'lockfile'
+      ;;
+    *"trust"*|*"untrusted"*)
+      printf 'trust'
+      ;;
+    *)
+      printf 'unknown'
+      ;;
+  esac
+}
+
+read_previous_mise_state() {
+  prev_status=""
+  prev_fingerprint=""
+  prev_failed_step=""
+  prev_error_class=""
+  [ -f "$mise_state" ] || return 0
+
+  while IFS= read -r line || [ -n "$line" ]; do
+    case "$line" in
+      *=*)
+        key="${line%%=*}"
+        value="${line#*=}"
+        case "$key" in
+          status) prev_status="$value" ;;
+          fingerprint) prev_fingerprint="$value" ;;
+          failed_step) prev_failed_step="$value" ;;
+          error_class) prev_error_class="$value" ;;
+        esac
+        ;;
+    esac
+  done < "$mise_state"
+}
+
+compute_mise_fingerprint() {
+  sys_cfg_hash="$(hash_file /etc/mise/config.toml)"
+  sys_lock_hash="$(hash_file /etc/mise/mise.lock)"
+  user_cfg_hash="$(hash_file "$HOME/.config/mise/config.toml")"
+  user_lock_hash="$(hash_file "$HOME/.config/mise/mise.lock")"
+  image_version="${BOSS_IMAGE_VERSION:-unknown}"
+  material="image=${image_version};system_config=${sys_cfg_hash};system_lock=${sys_lock_hash};user_config=${user_cfg_hash};user_lock=${user_lock_hash}"
+  fingerprint="$(hash_text "$material")"
+}
+
+write_mise_state() {
+  status="$1"
+  failed_step="$2"
+  error_class="$3"
+  error_message="$4"
+  should_warn="$5"
+  now_epoch="$(date +%s 2>/dev/null || printf '0')"
+
+  mkdir -p "$state_home"
+  {
+    printf 'version=1\n'
+    printf 'status=%s\n' "$status"
+    printf 'fingerprint=%s\n' "$fingerprint"
+    printf 'image_version=%s\n' "${BOSS_IMAGE_VERSION:-unknown}"
+    printf 'system_config_hash=%s\n' "$sys_cfg_hash"
+    printf 'system_lock_hash=%s\n' "$sys_lock_hash"
+    printf 'user_config_hash=%s\n' "$user_cfg_hash"
+    printf 'user_lock_hash=%s\n' "$user_lock_hash"
+    printf 'failed_step=%s\n' "$failed_step"
+    printf 'error_class=%s\n' "$error_class"
+    printf 'error_message=%s\n' "$error_message"
+    printf 'should_warn=%s\n' "$should_warn"
+    printf 'updated_at_epoch=%s\n' "$now_epoch"
+  } > "$mise_state"
+}
+
+record_mise_failure() {
+  failed_step="$1"
+  raw_output="$2"
+  error_message="$(last_non_empty_line "$raw_output")"
+  error_class="$(classify_error "$error_message")"
+
+  should_warn="1"
+  if [ "$prev_status" = "error" ] \
+    && [ "$prev_fingerprint" = "$fingerprint" ] \
+    && [ "$prev_failed_step" = "$failed_step" ] \
+    && [ "$prev_error_class" = "$error_class" ]; then
+    should_warn="0"
+  fi
+
+  write_mise_state "error" "$failed_step" "$error_class" "$error_message" "$should_warn"
+  if [ "$should_warn" = "1" ]; then
+    echo "Warning: mise reconciliation failed (${failed_step}/${error_class}): ${error_message}" >&2
+  fi
+}
+
+run_mise_reconciliation() {
+  if [ ! -f "$HOME/.config/mise/config.toml" ]; then
+    mkdir -p "$HOME/.config/mise"
+    : > "$HOME/.config/mise/config.toml"
+  fi
+
+  compute_mise_fingerprint
+  read_previous_mise_state
+
+  if ! command -v mise >/dev/null 2>&1; then
+    write_mise_state "skipped" "" "" "mise-not-found" "0"
+    rm -f "$mise_in_progress"
+    return 0
+  fi
+
+  if trust_system_output="$(mise trust /etc/mise/config.toml 2>&1)"; then
+    :
+  else
+    record_mise_failure "trust_system" "$trust_system_output"
+    rm -f "$mise_in_progress"
+    return 0
+  fi
+
+  if trust_user_output="$(mise trust "$HOME/.config/mise/config.toml" 2>&1)"; then
+    :
+  else
+    record_mise_failure "trust_user" "$trust_user_output"
+    rm -f "$mise_in_progress"
+    return 0
+  fi
+
+  if install_output="$(mise install --locked 2>&1)"; then
+    write_mise_state "ok" "" "" "" "0"
+  else
+    record_mise_failure "install_locked" "$install_output"
+  fi
+
+  rm -f "$mise_in_progress"
+}
 
 if [ -d /opt/defaults ]; then
   find /opt/defaults -mindepth 1 -type f -exec sh -eu -c '
@@ -19,8 +208,9 @@ if [ -d /opt/defaults ]; then
   ' sh "$HOME" {} +
 fi
 
+run_mise_reconciliation
+
 if [ -n "${BOSS_IMAGE_VERSION:-}" ]; then
-  state_home="${XDG_STATE_HOME:-${HOME}/.local/state}"
   marker="${state_home}/.boss-image-version"
   prev=""
 

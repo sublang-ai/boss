@@ -435,3 +435,10 @@ Where interactive Bash loads the default `.bashrc` in the container,
 `VIRTUAL_ENV` is removed after a venv-active state, the guard shall
 restore `PIP_USER=1`
 ([DR-005 §1](../decisions/005-package-manager-environment.md#1-xdg-environment-variables)).
+
+### SBT-058
+
+Where a container starts from `boss-sandbox:<tag>`, startup entrypoint
+shall write `$XDG_STATE_HOME/.boss-mise-reconcile.state` containing
+`status`, `fingerprint`, and `should_warn` fields
+([SBD-034](../dev/sandbox-image.md#sbd-034)).

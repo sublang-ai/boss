@@ -15,7 +15,7 @@ Migrate agent CLI installation from direct npm/binary installs to mise-managed p
 - [x] Agent CLIs preinstalled via `mise install` during image build
 - [x] mise shims on `PATH` for non-interactive tool invocation
 - [x] User-global config template at `~/.config/mise/config.toml`
-- [x] Start-time reconciliation in `boss start`
+- [x] Start-time reconciliation in container startup entrypoint, with host-side warning surfacing in `boss start`
 - [x] Dev, test, and user spec updates
 
 ## Tasks
@@ -69,7 +69,7 @@ Backend denylist: per [DR-004 §8](../decisions/004-user-tool-provisioning.md), 
 
 Codex uses the `github:` backend with `version_prefix = "rust-v"` because its releases are tagged as `rust-v<version>` (e.g., `rust-v0.98.0`). Verify the `version_prefix` resolves the correct release tag during implementation.
 
-**Version resolution note:** Baseline tools use `latest` to match the existing Dockerfile behavior (npm install without pinning). Each image build re-resolves `latest` to current upstream versions via `mise lock`; the resulting lockfile captures exact resolved versions. The build-phase install then uses `--locked` mode for determinism. Runtime consistency comes from the lockfile: start-time reconciliation (`mise install` in default non-locked mode) rehydrates the same versions the image was built with. Artifact identity is the immutable image digest (`sha256:...`), not the mutable tag — the lockfile does not provide cross-build reproducibility since `latest` re-resolves on each build.
+**Version resolution note:** Baseline tools use `latest` to match the existing Dockerfile behavior (npm install without pinning). Each image build re-resolves `latest` to current upstream versions via `mise lock`; the resulting lockfile captures exact resolved versions. Both build-phase install and runtime reconciliation use `--locked` mode for determinism against the baked lockfile. Artifact identity is the immutable image digest (`sha256:...`), not the mutable tag — the lockfile does not provide cross-build reproducibility since `latest` re-resolves on each build.
 
 ### 3. Replace direct agent installs with mise
 
@@ -104,7 +104,7 @@ RUN mise trust /etc/mise/config.toml \
  && mise reshim
 ```
 
-`mise install --locked` reads the system config, enforces the pre-resolved lockfile (no version re-resolution of `latest`), and installs the exact versions captured by `mise lock`. `mise reshim` generates shims at `~/.local/share/mise/shims/`. Non-locked mode is reserved for runtime reconciliation on `boss start`, where the volume may need rehydration from updated declarations.
+`mise install --locked` reads the system config, enforces the pre-resolved lockfile (no version re-resolution of `latest`), and installs the exact versions captured by `mise lock`. `mise reshim` generates shims at `~/.local/share/mise/shims/`.
 
 **Verification** (still as boss):
 
@@ -155,16 +155,16 @@ Per [DR-004 §8](../decisions/004-user-tool-provisioning.md), the backend denyli
 
 ### 6. Start-time reconciliation
 
-Per [DR-004 §5](../decisions/004-user-tool-provisioning.md), `boss start` shall run reconciliation after the container starts:
+Per [DR-004 §5](../decisions/004-user-tool-provisioning.md), container startup entrypoint shall run reconciliation and write state for host-side surfacing:
 
-```typescript
-// DR-004: reconcile mise tools (idempotent, locked mode)
-await podmanExec(['exec', name, 'mise', 'trust', '/etc/mise/config.toml']);
-await podmanExec(['exec', name, 'mise', 'trust', '/home/boss/.config/mise/config.toml']);
-await podmanExec(['exec', name, 'mise', 'install', '--locked']);
+```sh
+# DR-004: reconcile mise tools at startup (idempotent, locked mode)
+mise trust /etc/mise/config.toml
+mise trust ~/.config/mise/config.toml
+mise install --locked
 ```
 
-Add this to `src/commands/start.ts` after the existing `mkdir -p ~/.local/bin` reconciliation step.
+Entrypoint writes `$XDG_STATE_HOME/.boss-mise-reconcile.state` with status, fingerprint, failed-step/error metadata, and `should_warn`. `boss start` reads this file after startup and prints warnings only when `should_warn=1`.
 
 `mise trust` marks both the system and user-global configs as trusted so mise processes them; trust state lives on the volume and may be empty on first start. `mise install --locked` rehydrates missing install artifacts using the image-baked lockfile at `/etc/mise/mise.lock` — needed after image upgrades when the volume persists but image-layer installs are overwritten. `--locked` is required because the container rootfs is read-only at runtime.
 
@@ -190,7 +190,7 @@ Update existing:
 
 Add:
 
-- **LCD-007**: Where `boss start` launches the sandbox container, the start sequence shall run `mise trust` on the system and user-global configs and `mise install --locked` to reconcile tool installations ([DR-004 §5](../decisions/004-user-tool-provisioning.md)).
+- **LCD-007**: Where container startup entrypoint runs, it shall reconcile mise with `mise trust` + `mise install --locked` and emit reconcile state for `boss start` warning surfacing ([DR-004 §5](../decisions/004-user-tool-provisioning.md)).
 
 #### Test specs (`specs/test/sandbox-image.md`)
 
@@ -265,5 +265,5 @@ Add IR-008 row to the Iterations table.
 
 - [DR-004](../decisions/004-user-tool-provisioning.md) approved
 - [IR-001](001-oci-sandbox-image.md) (base image structure)
-- [IR-002](002-container-lifecycle.md) (`boss start` reconciliation hook)
+- [IR-002](002-container-lifecycle.md) (`boss start` lifecycle integration)
 - [IR-007](007-reliability-security.md) (vulnerability scanning must pass after change)

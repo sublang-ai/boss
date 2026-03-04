@@ -142,20 +142,27 @@ boss start
 
 **Symptom:** `claude`, `codex`, or another agent command is not found after upgrading the sandbox image.
 
-**Cause:** Agent CLIs are managed by mise and preinstalled in the image. `boss start` runs `mise install` to reconcile tools, but the reconciliation may have failed (e.g., network issue during start).
+**Cause:** Agent CLIs are managed by mise and preinstalled in the image. Container entrypoint runs reconciliation (`mise trust` + `mise install --locked`) on each start; reconciliation may fail (for example, during network outages).
 
 **Fix:**
 
-1. Restart the container — `boss start` will re-run reconciliation:
+1. Restart the container — startup entrypoint will re-run reconciliation:
    ```bash
    boss stop && boss start
    ```
-2. Or reconcile manually inside the container:
+2. Check the recorded reconcile state:
    ```bash
    boss open
-   mise install
+   cat "${XDG_STATE_HOME:-$HOME/.local/state}/.boss-mise-reconcile.state"
    ```
-3. As a last resort, recreate the volume for a fresh copy from the image:
+3. Or reconcile manually inside the container:
+   ```bash
+   boss open
+   mise trust /etc/mise/config.toml
+   mise trust ~/.config/mise/config.toml
+   mise install --locked
+   ```
+4. As a last resort, recreate the volume for a fresh copy from the image:
    ```bash
    boss stop
    podman volume rm boss-data    # WARNING: deletes all workspace data
@@ -164,9 +171,9 @@ boss start
 
 ## mise Install Slow or Fails During Start
 
-**Symptom:** `boss start` takes a long time or fails with network errors during the `mise install` reconciliation step.
+**Symptom:** `boss start` takes a long time or warns about mise reconciliation failure.
 
-**Cause:** `mise install` downloads tool artifacts from npm and GitHub when they are missing. When tools are already present, this step is typically fast with minimal or no downloads.
+**Cause:** `mise install --locked` downloads tool artifacts from npm and GitHub when they are missing. When tools are already present, this step is typically fast with minimal or no downloads.
 
 **Fix:**
 
