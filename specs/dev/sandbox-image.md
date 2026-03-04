@@ -47,9 +47,13 @@ Where the image is built, it shall remove SUID/SGID bits and
 provision default config files for agents and tmux at:
 `/home/boss/.claude.json`,
 `/home/boss/.claude/settings.json`,
+`/home/boss/.claude/CLAUDE.md`,
 `/home/boss/.codex/config.toml`,
+`/home/boss/.codex/AGENTS.md`,
 `/home/boss/.gemini/settings.json`,
+`/home/boss/.gemini/GEMINI.md`,
 `/home/boss/.config/opencode/opencode.json`,
+`/home/boss/.config/opencode/AGENTS.md`,
 `/etc/tmux.conf`, and
 `/home/boss/.tmux.conf`
 ([DR-001 §1](../decisions/001-sandbox-architecture.md#1-oci-container-as-the-sandbox-boundary),

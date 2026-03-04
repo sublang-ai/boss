@@ -93,6 +93,11 @@ COPY --chown=boss:boss conf/claude-settings.json  /home/boss/.claude/settings.js
 COPY --chown=boss:boss conf/codex-config.toml     /home/boss/.codex/config.toml
 COPY --chown=boss:boss conf/gemini-settings.json  /home/boss/.gemini/settings.json
 COPY --chown=boss:boss conf/opencode.json         /home/boss/.config/opencode/opencode.json
+# ---------- agent global instructions (DR-005 surface) ----------
+COPY --chown=boss:boss conf/claude-instructions.md  /home/boss/.claude/CLAUDE.md
+COPY --chown=boss:boss conf/codex-agents.md         /home/boss/.codex/AGENTS.md
+COPY --chown=boss:boss conf/gemini-instructions.md  /home/boss/.gemini/GEMINI.md
+COPY --chown=boss:boss conf/opencode-agents.md      /home/boss/.config/opencode/AGENTS.md
 # ---------- SSH known hosts + strict checking (DR-003 §2) ----------
 COPY conf/ssh_known_hosts                               /etc/ssh/ssh_known_hosts
 COPY conf/ssh_config                                    /etc/ssh/ssh_config.d/boss.conf
@@ -110,9 +115,13 @@ RUN mkdir -p /opt/defaults/.claude /opt/defaults/.codex /opt/defaults/.gemini \
  && cp -a /home/boss/.tmux.conf /opt/defaults/.tmux.conf \
  && cp -a /home/boss/.claude.json /opt/defaults/.claude.json \
  && cp -a /home/boss/.claude/settings.json /opt/defaults/.claude/settings.json \
+ && cp -a /home/boss/.claude/CLAUDE.md /opt/defaults/.claude/CLAUDE.md \
  && cp -a /home/boss/.codex/config.toml /opt/defaults/.codex/config.toml \
+ && cp -a /home/boss/.codex/AGENTS.md /opt/defaults/.codex/AGENTS.md \
  && cp -a /home/boss/.gemini/settings.json /opt/defaults/.gemini/settings.json \
+ && cp -a /home/boss/.gemini/GEMINI.md /opt/defaults/.gemini/GEMINI.md \
  && cp -a /home/boss/.config/opencode/opencode.json /opt/defaults/.config/opencode/opencode.json \
+ && cp -a /home/boss/.config/opencode/AGENTS.md /opt/defaults/.config/opencode/AGENTS.md \
  && cp -a /home/boss/.config/mise/config.toml /opt/defaults/.config/mise/config.toml \
  && printf 'seed-defaults-v1\n' > /opt/defaults/.config/boss/default-seed.marker
 
