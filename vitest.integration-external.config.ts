@@ -5,8 +5,7 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
-    include: ['tests/integration/**/*.test.ts'],
-    exclude: ['tests/integration/autonomous.test.ts'],
+    include: ['tests/integration/autonomous.test.ts'],
     fileParallelism: false,
     globalSetup: ['tests/integration/globalSetup.ts'],
     hookTimeout: 120_000,

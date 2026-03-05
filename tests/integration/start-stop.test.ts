@@ -222,8 +222,8 @@ describe('boss start/stop (integration)', { timeout: 120_000, sequential: true }
     }).toThrow();
   });
 
-  // SBT-008: agent global instruction files exist at correct container paths
-  it('provisions agent global instruction files (SBT-008)', () => {
+  // Agent global instruction files: content check for package-install guidance
+  it('provisions agent global instruction files', () => {
     const instructionFiles: Record<string, string> = {
       '/home/boss/.claude/CLAUDE.md': 'Environment: package installation',
       '/home/boss/.codex/AGENTS.md': 'Environment: package installation',

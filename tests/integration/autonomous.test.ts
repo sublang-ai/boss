@@ -423,7 +423,7 @@ memory = "2g"
       const ok = `SUDO_NOT_REQUIRED_${id}`;
       const bad = `SUDO_REQUIRED_${id}`;
       const prompt =
-        `Return exactly one token: ${ok} if sudo is NOT required, or ${bad} if sudo IS required. Which is correct for pip install in this environment?`;
+        `Return exactly one token: ${bad} if sudo IS required, or ${ok} if sudo is NOT required. Which is correct for pip install in this environment?`;
       return { ok, bad, prompt };
     }
 
@@ -452,17 +452,18 @@ memory = "2g"
             if (attempt < INSTR_MAX_ATTEMPTS) continue;
             expect.unreachable(diagnoseAgent(agent.exitCode, agent.log));
           }
-          // Extract the last token match — skips any prompt echo (which
-          // comes first) and captures only the model's answer.
-          const matches = agent.log.match(tokenRe);
-          const answer = matches?.[matches.length - 1];
-          if (answer === ok) return;
-          if (answer === bad) {
+          // Count token occurrences.  The prompt contributes exactly one ok
+          // and one bad, so any excess is the model's actual answer.
+          const matches = [...agent.log.matchAll(tokenRe)].map((m) => m[1]);
+          const okCount = matches.filter((m) => m === ok).length;
+          const badCount = matches.filter((m) => m === bad).length;
+          if (okCount > badCount) return; // model answered ok
+          if (badCount > okCount) {
             // Agent actively answered wrong — real regression, hard-fail.
-            expect(answer, `${label}: agent answered ${bad} (instructions not loaded?)`).toBe(ok);
+            expect(bad, `${label}: agent answered ${bad} (instructions not loaded?)`).toBe(ok);
           }
-          // No token in output (e.g., empty response, free-form text) —
-          // provider/model reliability issue, retry then soft-skip.
+          // Equal counts (prompt echo only) or no tokens — provider/model
+          // reliability issue, retry then soft-skip.
           if (attempt < INSTR_MAX_ATTEMPTS) continue;
           console.warn(`Soft-skipping ${label} instruction smoke test: model produced no token.`);
           return;
