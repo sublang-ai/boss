@@ -12,7 +12,9 @@ sandbox image.
 
 Where a container runs from the official sandbox image, when a
 user opens a shell in the container, the container shall expose
-`claude`, `codex`, `gemini`, and `opencode` on `PATH`
+`claude` and `codex` on `PATH`. `gemini` and `opencode` are
+installed on first use when the user runs `boss open ~ gemini`
+or `boss open ~ opencode`
 ([DR-001 §1](../decisions/001-sandbox-architecture.md#1-oci-container-as-the-sandbox-boundary)).
 
 ### SBX-002

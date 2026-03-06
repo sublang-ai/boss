@@ -7,12 +7,51 @@ import {
   podmanSpawn,
   podmanErrorMessage,
 } from '../utils/podman.js';
-import { readConfig, validateWorkspace, KNOWN_AGENTS } from '../utils/config.js';
+import { readConfig, validateWorkspace, KNOWN_AGENTS, ON_DEMAND_AGENTS } from '../utils/config.js';
 import { startCommand } from './start.js';
 import { buildSessionName, validateSessionToken } from '../utils/session.js';
 import { homedir } from 'node:os';
 
 const CONTAINER_HOME = '/home/boss';
+const ONDEMAND_CONFIG = '/etc/mise/ondemand.toml';
+const ONDEMAND_LOCK = '/etc/mise/ondemand.lock';
+
+/**
+ * Ensure an on-demand agent is installed inside the container.
+ * Copies the locked on-demand config to a writable tmpdir (rootfs is
+ * read-only) and runs `mise install --locked`.
+ */
+async function ensureOnDemandAgent(
+  containerName: string,
+  agent: string,
+): Promise<void> {
+  // Check if the agent binary already resolves via mise shim
+  try {
+    await podmanExec(['exec', containerName, 'mise', 'which', agent]);
+    return; // already installed
+  } catch {
+    // not installed — proceed
+  }
+
+  console.log(`Installing ${agent} (first use)...`);
+
+  const script = [
+    'set -eu',
+    'td="$(mktemp -d /tmp/boss-ondemand.XXXXXX)"',
+    `cp ${ONDEMAND_CONFIG} "$td/mise.toml"`,
+    `cp ${ONDEMAND_LOCK} "$td/mise.lock"`,
+    'mise trust "$td/mise.toml"',
+    `MISE_IGNORED_CONFIG_PATHS="/etc/mise/config.toml:$HOME/.config/mise/config.toml" mise -C "$td" install --locked`,
+    'mise reshim',
+    // OpenCode ships unused musl binaries — clean them up
+    ...(agent === 'opencode'
+      ? ['find ~/.local/share/mise/installs -type d -name \'opencode-linux-*-musl\' -exec rm -rf {} + 2>/dev/null || true']
+      : []),
+    'rm -rf "$td"',
+  ].join('\n');
+
+  await podmanExec(['exec', containerName, 'sh', '-c', script]);
+}
 
 /**
  * Normalize a workspace argument: if the shell expanded `~` to the
@@ -117,6 +156,11 @@ export async function openCommand(
       await podmanExec([
         'exec', name, 'mkdir', '-p', resolved.workDir,
       ]);
+    }
+
+    // Install on-demand agent if needed (before launching tmux)
+    if (ON_DEMAND_AGENTS.has(resolved.binary)) {
+      await ensureOnDemandAgent(name, resolved.binary);
     }
 
     // Pass through exactly what comes after the first `--`.

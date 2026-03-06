@@ -20,6 +20,15 @@ export const VOLUME_NAME = 'boss-data';
 /** Built-in agent names. Binary === name in every case. */
 export const KNOWN_AGENTS: ReadonlySet<string> = new Set(['claude', 'codex', 'gemini', 'opencode']);
 
+/** Agents installed on first use rather than baked into the image. */
+export const ON_DEMAND_AGENTS: ReadonlySet<string> = new Set(['gemini', 'opencode']);
+
+/** Map on-demand agent binary names to their mise tool identifiers. */
+export const ON_DEMAND_TOOL_IDS: ReadonlyMap<string, string> = new Map([
+  ['gemini', 'npm:@google/gemini-cli'],
+  ['opencode', 'npm:opencode-ai'],
+]);
+
 export interface ContainerConfig {
   name: string;
   image: string;

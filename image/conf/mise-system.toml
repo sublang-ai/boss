@@ -4,6 +4,9 @@
 # Baseline agent CLIs — managed by mise, preinstalled during image build.
 # System config has higher precedence than user-global config (DR-004 §3),
 # so these declarations cannot be accidentally removed.
+#
+# On-demand agents (gemini, opencode) are declared in mise-ondemand.toml
+# and installed at first use via `boss open`.
 
 [settings]
 lockfile = true
@@ -15,8 +18,6 @@ disable_backends = [
 
 [tools]
 "npm:@anthropic-ai/claude-code" = "latest"
-"npm:@google/gemini-cli" = "latest"
-"npm:opencode-ai" = "latest"
 
 [tools."github:openai/codex"]
 version = "latest"

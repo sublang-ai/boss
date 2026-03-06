@@ -247,6 +247,27 @@ memory = "2g"
       const { startCommand } = await import('../../src/commands/start.js');
       await startCommand();
 
+      // Install on-demand agents (gemini, opencode) — they are not baked into the image.
+      const ondemandScript = [
+        'set -eu',
+        'td="$(mktemp -d /tmp/boss-ondemand.XXXXXX)"',
+        'cp /etc/mise/ondemand.toml "$td/mise.toml"',
+        'cp /etc/mise/ondemand.lock "$td/mise.lock"',
+        'mise trust "$td/mise.toml"',
+        'MISE_IGNORED_CONFIG_PATHS="/etc/mise/config.toml:$HOME/.config/mise/config.toml" mise -C "$td" install --locked',
+        'mise reshim',
+        'find ~/.local/share/mise/installs -type d -name \'opencode-linux-*-musl\' -exec rm -rf {} + 2>/dev/null || true',
+        'rm -rf "$td"',
+      ].join('\n');
+      try {
+        execFileSync('podman', ['exec', TEST_CONTAINER, 'sh', '-c', ondemandScript], {
+          encoding: 'utf-8',
+          timeout: 300_000,
+        });
+      } catch (err) {
+        console.warn('Warning: on-demand agent install failed:', (err as Error).message?.split('\n')[0] ?? err);
+      }
+
       // Pre-warm OpenCode's one-time database migration so it doesn't eat test time.
       try {
         execFileSync('podman', ['exec', TEST_CONTAINER, 'opencode', 'version'], {

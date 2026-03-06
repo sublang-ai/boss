@@ -16,9 +16,10 @@ Where the image source exists, when a runtime builds
 
 ### SBT-002
 
-Where `boss-sandbox:<tag>` is built, when `claude --version`,
-`codex --version`, `gemini --version`, and `opencode --version`
-run in the container, each command shall exit 0
+Where `boss-sandbox:<tag>` is built, when `claude --version` and
+`codex --help` run in the container, each command shall exit 0.
+On-demand agents (`gemini`, `opencode`) are verified after
+first-use installation via `boss open`
 ([DR-001 Context](../decisions/001-sandbox-architecture.md#context)).
 
 ### SBT-003

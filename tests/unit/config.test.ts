@@ -31,6 +31,23 @@ describe('exported constants', () => {
     expect([...KNOWN_AGENTS]).toEqual(['claude', 'codex', 'gemini', 'opencode']);
   });
 
+  it('ON_DEMAND_AGENTS is a subset of KNOWN_AGENTS', async () => {
+    const { KNOWN_AGENTS, ON_DEMAND_AGENTS } = await import('../../src/utils/config.js');
+    expect([...ON_DEMAND_AGENTS]).toEqual(['gemini', 'opencode']);
+    for (const agent of ON_DEMAND_AGENTS) {
+      expect(KNOWN_AGENTS.has(agent)).toBe(true);
+    }
+  });
+
+  it('ON_DEMAND_TOOL_IDS maps on-demand agents to mise tool identifiers', async () => {
+    const { ON_DEMAND_AGENTS, ON_DEMAND_TOOL_IDS } = await import('../../src/utils/config.js');
+    for (const agent of ON_DEMAND_AGENTS) {
+      expect(ON_DEMAND_TOOL_IDS.has(agent)).toBe(true);
+    }
+    expect(ON_DEMAND_TOOL_IDS.get('gemini')).toBe('npm:@google/gemini-cli');
+    expect(ON_DEMAND_TOOL_IDS.get('opencode')).toBe('npm:opencode-ai');
+  });
+
   it('DEFAULT_IMAGE points to GHCR sandbox', async () => {
     const { DEFAULT_IMAGE } = await import('../../src/utils/config.js');
     expect(DEFAULT_IMAGE).toBe('ghcr.io/sublang-dev/boss-sandbox:latest');

@@ -17,7 +17,10 @@ Where the local sandbox image is built, the Dockerfile shall use
 ### SBD-002
 
 Where agent runtimes are installed, the build shall install
-all agent CLIs via mise using npm and github backends
+baseline agent CLIs (claude, codex) via mise using npm and
+github backends. On-demand agent CLIs (gemini, opencode) shall
+be declared in a separate on-demand config, locked at build time,
+but not pre-installed
 ([DR-001 Context](../decisions/001-sandbox-architecture.md#context),
 [DR-004 §3](../decisions/004-user-tool-provisioning.md)).
 
@@ -212,8 +215,8 @@ version and its binary shall be on `PATH`
 ### SBD-025
 
 Where the image is built, `/etc/mise/config.toml` shall declare
-all baseline agent CLIs and enforce a backend denylist allowing
-only `npm` and `github` backends
+baseline agent CLIs (claude, codex) and enforce a backend denylist
+allowing only `npm` and `github` backends
 ([DR-004 §3, §8](../decisions/004-user-tool-provisioning.md)).
 
 ### SBD-026
@@ -224,9 +227,32 @@ resolved versions for all declared baseline tools
 
 ### SBD-027
 
-Where the image is built, agent CLI binaries shall be invocable
-via mise shims on `PATH`
+Where the image is built, baseline agent CLI binaries shall be
+invocable via mise shims on `PATH`
 ([DR-004 §3](../decisions/004-user-tool-provisioning.md)).
+
+### SBD-035
+
+Where the image is built, `/etc/mise/ondemand.toml` shall
+declare on-demand agent CLIs (gemini, opencode) with the same
+backend denylist as the baseline config. `/etc/mise/ondemand.lock`
+shall contain resolved versions locked at build time. These
+tools shall not be pre-installed during the image build.
+
+### SBD-036
+
+Where a user runs `boss open` with an on-demand agent, if the
+agent binary is not yet installed, the CLI shall install it
+from the on-demand config+lockfile before launching the tmux
+session. A progress message shall be displayed during
+installation.
+
+### SBD-037
+
+Where on-demand agents have been previously installed, the
+entrypoint reconciliation shall reconcile them using the
+on-demand config+lockfile, following the same locked-install
+pattern as baseline system tools.
 
 ## DR-005 Package Manager Environment
 

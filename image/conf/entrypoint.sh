@@ -299,6 +299,68 @@ run_mise_reconciliation() {
     return 0
   fi
 
+  # --- on-demand agent reconciliation ---
+  # If on-demand agents were previously installed (shim resolves), reconcile
+  # them using the on-demand config+lock so image upgrades propagate.
+  ondemand_cfg="/etc/mise/ondemand.toml"
+  ondemand_lock="/etc/mise/ondemand.lock"
+  if [ -f "$ondemand_cfg" ] && [ -f "$ondemand_lock" ]; then
+    # Check if any on-demand tool is already installed
+    has_ondemand=0
+    for tool_bin in gemini opencode; do
+      if mise which "$tool_bin" >/dev/null 2>&1; then
+        has_ondemand=1
+        break
+      fi
+    done
+
+    if [ "$has_ondemand" = "1" ]; then
+      if od_tmp="$(mktemp -d /tmp/boss-mise-ondemand.XXXXXX 2>/dev/null)"; then
+        :
+      else
+        od_tmp="/tmp/boss-mise-ondemand-$$"
+        rm -rf "$od_tmp" 2>/dev/null || true
+        mkdir -p "$od_tmp"
+      fi
+
+      if od_prepare_output="$(
+        cp "$ondemand_cfg" "$od_tmp/mise.toml" 2>&1
+        cp "$ondemand_lock" "$od_tmp/mise.lock" 2>&1
+      )"; then
+        :
+      else
+        record_mise_failure "prepare_ondemand_locked" "$od_prepare_output"
+        rm -rf "$od_tmp" 2>/dev/null || true
+        rm -f "$mise_in_progress"
+        return 0
+      fi
+
+      if od_trust_output="$(run_mise trust "$od_tmp/mise.toml" 2>&1)"; then
+        :
+      else
+        record_mise_failure "trust_ondemand_locked" "$od_trust_output"
+        rm -rf "$od_tmp" 2>/dev/null || true
+        rm -f "$mise_in_progress"
+        return 0
+      fi
+
+      ondemand_ignore="/etc/mise/config.toml:$HOME/.config/mise/config.toml"
+      if od_install_output="$(MISE_IGNORED_CONFIG_PATHS="$ondemand_ignore" run_mise -C "$od_tmp" install --locked 2>&1)"; then
+        # Clean up OpenCode musl binaries if opencode was reconciled
+        if mise which opencode >/dev/null 2>&1; then
+          find ~/.local/share/mise/installs -type d -name 'opencode-linux-*-musl' -exec rm -rf {} + 2>/dev/null || true
+        fi
+      else
+        record_mise_failure "install_ondemand_locked" "$od_install_output"
+        rm -rf "$od_tmp" 2>/dev/null || true
+        rm -f "$mise_in_progress"
+        return 0
+      fi
+
+      rm -rf "$od_tmp" 2>/dev/null || true
+    fi
+  fi
+
   write_mise_state "ok" "" "" "" "0"
   rm -f "$mise_in_progress"
 }

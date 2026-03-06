@@ -12,7 +12,7 @@ ARG NPM_VERSION=11.11.0
 RUN echo 'deb http://deb.debian.org/debian bookworm-backports main' > /etc/apt/sources.list.d/bookworm-backports.list \
  && apt-get update \
  && apt-get install -y --no-install-recommends \
-      tini tmux bash git curl jq ca-certificates openssh-client locales gpg tree glab/bookworm-backports \
+      tini tmux bash git curl jq ca-certificates openssh-client locales gpg tree vim-tiny glab/bookworm-backports \
  && sed -i 's/^# *en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen \
  && locale-gen \
  && rm -rf /var/lib/apt/lists/*
@@ -78,11 +78,17 @@ RUN test -f /home/boss/.bashrc || touch /home/boss/.bashrc \
 
 # ---------- mise system config + lockfile (root phase) ----------
 COPY conf/mise-system.toml /etc/mise/config.toml
+COPY conf/mise-ondemand.toml /etc/mise/ondemand.toml
 RUN --mount=type=secret,id=GITHUB_TOKEN \
     if [ -f /run/secrets/GITHUB_TOKEN ]; then \
       export GITHUB_TOKEN="$(cat /run/secrets/GITHUB_TOKEN)"; \
     fi \
- && mise lock
+ && mise lock \
+ && cd /tmp && cp /etc/mise/ondemand.toml mise.toml \
+ && mise trust mise.toml \
+ && MISE_IGNORED_CONFIG_PATHS="/etc/mise/config.toml" mise lock \
+ && cp mise.lock /etc/mise/ondemand.lock \
+ && rm -f mise.toml mise.lock
 
 # ---------- container defaults ----------
 ENV NO_BROWSER=true
@@ -129,7 +135,7 @@ RUN mkdir -p /opt/defaults/.claude /opt/defaults/.codex /opt/defaults/.gemini \
 # Allow boss to update lockfile during install (rootfs is read-only at runtime)
 # Re-chown home tree: root-phase steps (mise lock, COPY, etc.) may have
 # created XDG dirs (~/.local, ~/.cache, ~/.config) owned by root.
-RUN chown boss:boss /etc/mise /etc/mise/mise.lock \
+RUN chown boss:boss /etc/mise /etc/mise/mise.lock /etc/mise/ondemand.toml /etc/mise/ondemand.lock \
  && chown -R boss:boss /home/boss
 
 USER boss
@@ -138,11 +144,9 @@ RUN mise trust /etc/mise/config.toml \
  && mise install --locked \
  && mise reshim
 
-# ---------- verify agent binaries ----------
+# ---------- verify baseline agent binaries ----------
 RUN claude --version \
  && codex --help > /dev/null \
- && gemini --version \
- && opencode --version \
  && gpg --version > /dev/null \
  && tree --version > /dev/null \
  && gh --version > /dev/null \

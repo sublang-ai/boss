@@ -1,0 +1,18 @@
+# SPDX-License-Identifier: Apache-2.0
+# SPDX-FileCopyrightText: 2026 SubLang International <https://sublang.ai>
+
+# On-demand agent CLIs — locked at image build time but installed at first
+# use via `boss open`.  Keeps the baseline image lean while guaranteeing
+# reproducible versions.
+
+[settings]
+lockfile = true
+disable_backends = [
+  "aqua", "asdf", "cargo", "conda", "dotnet",
+  "forgejo", "gem", "gitlab", "go", "http",
+  "pipx", "s3", "spm", "ubi", "vfox",
+]
+
+[tools]
+"npm:@google/gemini-cli" = "latest"
+"npm:opencode-ai" = "latest"
