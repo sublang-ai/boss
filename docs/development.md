@@ -16,7 +16,7 @@ npm link
 
 ## Dev Sandbox Image
 
-The CI pipeline publishes a development image from `main` on every push. To use it:
+CI publishes a development image when `image/` files change on `main`, on a daily schedule, or via manual workflow dispatch. To use it:
 
 ```bash
 boss init --image ghcr.io/sublang-dev/boss-sandbox:dev-latest
@@ -42,5 +42,6 @@ boss stop && boss start
 | --- | --- |
 | `latest` | Latest release (default) |
 | `<version>` | Pinned release (e.g. `0.3.0`) |
-| `dev-latest` | Latest build from `main` |
-| `<short-sha>` | Specific commit build (e.g. `7633572`) |
+| `dev-latest` | Latest dev build (from `image/` changes or daily refresh) |
+| `dev-YYYYMMDD` | Daily scheduled rebuild |
+| `<short-sha>` | Commit build (push or manual dispatch) |
