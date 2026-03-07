@@ -12,7 +12,6 @@ export const CONFIG_PATH = join(CONFIG_DIR, 'config.toml');
 export const ENV_PATH = join(CONFIG_DIR, '.env');
 
 export const DEFAULT_IMAGE = 'ghcr.io/sublang-dev/boss-sandbox:latest';
-export const LEGACY_DEFAULT_IMAGE = 'docker.io/library/alpine:latest';
 export const DEFAULT_CONTAINER_NAME = 'boss-sandbox';
 export const DEFAULT_MEMORY = '16g';
 export const VOLUME_NAME = 'boss-data';
@@ -61,7 +60,7 @@ export interface BossConfig {
   auth?: AuthConfig;
 }
 
-async function loadToml(): Promise<{ stringify: (obj: Record<string, unknown>) => string; parse: (str: string) => Record<string, unknown> }> {
+async function loadToml(): Promise<{ parse: (str: string) => Record<string, unknown> }> {
   return await import('smol-toml');
 }
 
@@ -106,38 +105,6 @@ export async function writeConfig(image?: string): Promise<boolean> {
     return false;
   }
   await writeFile(CONFIG_PATH, configTemplate(image), 'utf-8');
-  return true;
-}
-
-export async function reconcileConfigImage(
-  image: string,
-  options?: { force?: boolean },
-): Promise<boolean> {
-  if (!existsSync(CONFIG_PATH)) {
-    return false;
-  }
-
-  const config = await readConfig();
-  if (config.container.image === image) {
-    return false;
-  }
-
-  const force = options?.force === true;
-  const isLegacyDefault = config.container.image === LEGACY_DEFAULT_IMAGE;
-  if (!force && !isLegacyDefault) {
-    return false;
-  }
-
-  const { stringify } = await loadToml();
-  const updated: BossConfig = {
-    ...config,
-    container: {
-      ...config.container,
-      image,
-    },
-  };
-  const toml = stringify(updated as unknown as Record<string, unknown>);
-  await writeFile(CONFIG_PATH, toml, 'utf-8');
   return true;
 }
 

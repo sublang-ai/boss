@@ -19,8 +19,8 @@ import {
   podmanErrorMessage,
 } from '../utils/podman.js';
 import {
+  readConfig,
   writeConfig,
-  reconcileConfigImage,
   writeEnvTemplate,
   DEFAULT_IMAGE,
   VOLUME_NAME,
@@ -115,16 +115,23 @@ export async function initCommand(options: { image?: string; yes?: boolean }): P
     }
 
     // 5. Pull OCI image
-    // Always pull mutable references so `boss init` picks up newer builds.
-    // Only skip for digest-pinned refs (@sha256:…) which are immutable.
-    const image = options.image ?? DEFAULT_IMAGE;
-    const isImmutable = image.includes('@sha256:');
-    if (isImmutable && await imageExists(image)) {
-      step(`Image ${image}`, 'skipped');
+    // Priority: --image flag > existing config > DEFAULT_IMAGE.
+    // --image is a one-shot override and does not mutate config.
+    // Always pull mutable refs; only skip digest-pinned (@sha256:…).
+    let configImage: string | undefined;
+    try {
+      configImage = (await readConfig()).container.image;
+    } catch {
+      // Config does not exist yet — first init.
+    }
+    const pullImage_ = options.image ?? configImage ?? DEFAULT_IMAGE;
+    const isImmutable = pullImage_.includes('@sha256:');
+    if (isImmutable && await imageExists(pullImage_)) {
+      step(`Image ${pullImage_}`, 'skipped');
     } else {
-      console.log(`  Pulling image ${image}...`);
-      await pullImage(image);
-      step(`Image ${image}`, 'done');
+      console.log(`  Pulling image ${pullImage_}...`);
+      await pullImage(pullImage_);
+      step(`Image ${pullImage_}`, 'done');
     }
 
     // 6. Create volume
@@ -135,14 +142,9 @@ export async function initCommand(options: { image?: string; yes?: boolean }): P
       step(`Volume "${VOLUME_NAME}"`, 'created');
     }
 
-    // 7. Generate config
-    const configCreated = await writeConfig(image);
-    if (configCreated) {
-      step('Config ~/.boss/config.toml', 'created');
-    } else {
-      const configUpdated = await reconcileConfigImage(image, { force: Boolean(options.image) });
-      step('Config ~/.boss/config.toml', configUpdated ? 'updated' : 'skipped');
-    }
+    // 7. Generate config (only on first init; re-init never overwrites)
+    const configCreated = await writeConfig(configImage ?? DEFAULT_IMAGE);
+    step('Config ~/.boss/config.toml', configCreated ? 'created' : 'skipped');
 
     // 8. Generate .env template
     const envCreated = await writeEnvTemplate();
