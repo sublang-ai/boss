@@ -148,7 +148,7 @@ boss stop
 
 ### Behavior
 
-- Sends SIGTERM with a 30-second grace period
+- Sends SIGTERM with a 10-second grace period
 - Removes the container after stopping
 - Volume data (`boss-data`) is preserved
 

@@ -73,7 +73,7 @@ Per [DR-001 §1](../decisions/001-sandbox-architecture.md#1-oci-container-as-the
 
 Per [DR-002 §3](../decisions/002-iteron-cli-commands.md#3-boss-stop):
 
-- Stop container with 30-second grace period (`podman stop -t 30 boss-sandbox`)
+- Stop container with 10-second grace period (`podman stop -t 10 boss-sandbox`)
 - Remove stopped container (`podman rm boss-sandbox`)
 - Optionally stop `podman machine` if no other containers running (macOS/Windows)
 - If container not running, exit 0 with message
@@ -111,7 +111,7 @@ GEMINI_API_KEY=
 | 5 | `boss start` then `podman container inspect boss-sandbox --format '{{.HostConfig.ReadonlyRootfs}}'` | `true` |
 | 6 | `boss start` then `podman container inspect boss-sandbox --format '{{.HostConfig.SecurityOpt}}'` | Contains `no-new-privileges` |
 | 7 | `boss start` when already running | Exits 0, prints "already running" |
-| 8 | `boss stop` | Container stops within 30s; `podman ps -a --filter name=boss-sandbox` returns empty |
+| 8 | `boss stop` | Container stops within 10s; `podman ps -a --filter name=boss-sandbox` returns empty |
 | 9 | `boss stop` when not running | Exits 0, prints "not running" |
 | 10 | `cat ~/.boss/config.toml` after init | Valid TOML; contains `[container]` section |
 | 11 | `cat ~/.boss/.env` after init | Contains `ANTHROPIC_API_KEY=`, `CODEX_API_KEY=`, `GEMINI_API_KEY=` |

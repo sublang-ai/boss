@@ -19,8 +19,8 @@ export async function stopCommand(): Promise<void> {
       return;
     }
 
-    console.log(`Stopping container "${name}" (30s grace period)...`);
-    await podmanExec(['stop', '-t', '30', name]);
+    console.log(`Stopping container "${name}"...`);
+    await podmanExec(['stop', '-t', '10', name]);
 
     if (await containerExists(name)) {
       await podmanExec(['rm', name]);

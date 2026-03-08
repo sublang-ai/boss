@@ -8,6 +8,6 @@ export default defineConfig({
     include: ['tests/integration/autonomous.test.ts'],
     fileParallelism: false,
     globalSetup: ['tests/integration/globalSetup.ts'],
-    hookTimeout: 120_000,
+    hookTimeout: 720_000,
   },
 });

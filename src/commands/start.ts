@@ -213,7 +213,13 @@ export async function startCommand(): Promise<void> {
       '--name', name,
       '--cap-drop', 'ALL',
       '--security-opt', 'no-new-privileges',
-      '--security-opt', 'label=disable',
+      // Podman on macOS runs inside a VM with SELinux enforcing. Files
+      // created via `podman exec` receive an SELinux label tied to the
+      // container context; after stop/start the new container gets a
+      // different context, causing EPERM on those files despite correct
+      // Unix permissions.  On native Linux, SELinux provides real value
+      // so we keep it enabled there.
+      ...(needsMachine(platform) ? ['--security-opt', 'label=disable'] : []),
       '--read-only',
       '--tmpfs', '/tmp',
       '-v', `${config.container.volume ?? VOLUME_NAME}:/home/boss:U`,
