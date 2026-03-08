@@ -10,6 +10,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-03-08
+
+### Added
+
+- **On-demand agent install**: Gemini and OpenCode are lazily installed on first `boss open` instead of being baked into the image
+- **Agent instruction files**: Global package-install guidance provisioned per agent (CLAUDE.md, AGENTS.md, GEMINI.md)
+- **Development guide**: Documentation for source builds and dev image workflow
+
+### Changed
+
+- `boss stop` grace period reduced from 30s to 10s (container exits immediately on SIGTERM; 10s is ample for agent flush)
+- `boss init` reads image from config exclusively; removed legacy DEFAULT_IMAGE migration
+- Reorganized repo: assets/ moved into docs/assets/, vitest configs moved into config/
+- CI splits integration tests into self-contained and external jobs
+
+### Fixed
+
+- `boss start` hangs when Podman machine is not running on macOS
+- `boss init` always pulls mutable image tags; falls back to cached image when pull fails
+- SELinux EPERM on volume files across container restarts on macOS (gated label=disable to Podman-machine platforms only)
+- Integration tests now locally runnable on macOS (isolated volumes, staleness detection, raised timeouts)
+- On-demand agent symlink activation replaces direct mise shim approach
+
+### Security
+
+- Updated trivyignore for two new CVEs in container image
+
 ## [0.3.0] - 2026-03-04
 
 ### Added
@@ -121,7 +148,8 @@ Install with `npm install -g @sublang/iteron`.
 - GitHub Actions CI workflow
 - Project specifications structure
 
-[Unreleased]: https://github.com/sublang-dev/boss/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/sublang-dev/boss/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/sublang-dev/boss/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/sublang-dev/boss/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/sublang-dev/boss/compare/v0.1.3...v0.2.0
 [0.1.3]: https://github.com/sublang-dev/boss/compare/v0.1.2...v0.1.3
