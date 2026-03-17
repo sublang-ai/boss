@@ -12,13 +12,8 @@ on:
           - both
           - release
           - dev
-  schedule:
-    # Daily rebuild to refresh latest agent versions resolved by mise lock.
-    - cron: "17 3 * * *"
   push:
     branches: [main]
-    # Push-path filters apply to push events only. Scheduled/manual refreshes
-    # intentionally rebuild to pick up upstream agent/base updates.
     paths: [image/**]
     tags: ["v[0-9]*"]
 
@@ -32,7 +27,7 @@ env:
 
 jobs:
   build-push-release:
-    if: github.event_name == 'schedule' || (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')) || (github.event_name == 'workflow_dispatch' && github.event.inputs.track != 'dev')
+    if: (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')) || (github.event_name == 'workflow_dispatch' && github.event.inputs.track != 'dev')
     runs-on: ubuntu-latest
     outputs:
       scan_tag: ${{ steps.meta.outputs.scan_tag }}
@@ -43,7 +38,7 @@ jobs:
           fetch-depth: 0
 
       - name: Checkout latest release tag
-        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch'
         run: |
           git fetch --force --tags origin
           LATEST_TAG="$(git tag -l 'v[0-9]*' --sort=-v:refname | head -n1)"
@@ -90,7 +85,6 @@ jobs:
           context: image
           platforms: linux/amd64,linux/arm64
           pull: true
-          no-cache: ${{ github.event_name == 'schedule' }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=gha
@@ -101,7 +95,7 @@ jobs:
             GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
 
   build-push-dev:
-    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.track != 'release') || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    if: (github.event_name == 'workflow_dispatch' && github.event.inputs.track != 'release') || (github.event_name == 'push' && github.ref == 'refs/heads/main')
     runs-on: ubuntu-latest
     outputs:
       scan_tag: ${{ steps.meta.outputs.scan_tag }}
@@ -112,15 +106,9 @@ jobs:
       - name: Compute tags
         id: meta
         run: |
-          if [[ "${GITHUB_EVENT_NAME}" == "schedule" ]]; then
-            DATE_TAG="$(date -u +'%Y%m%d')"
-            TAGS="${IMAGE}:dev-latest,${IMAGE}:dev-${DATE_TAG}"
-            SCAN_TAG="${IMAGE}:dev-${DATE_TAG}"
-          else
-            SHA="${GITHUB_SHA::7}"
-            TAGS="${IMAGE}:${SHA},${IMAGE}:dev-latest"
-            SCAN_TAG="${IMAGE}:${SHA}"
-          fi
+          SHA="${GITHUB_SHA::7}"
+          TAGS="${IMAGE}:${SHA},${IMAGE}:dev-latest"
+          SCAN_TAG="${IMAGE}:${SHA}"
           echo "tags=${TAGS}" >> "$GITHUB_OUTPUT"
           echo "scan_tag=${SCAN_TAG}" >> "$GITHUB_OUTPUT"
 
@@ -146,7 +134,6 @@ jobs:
           context: image
           platforms: linux/amd64,linux/arm64
           pull: true
-          no-cache: ${{ github.event_name == 'schedule' }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=gha
