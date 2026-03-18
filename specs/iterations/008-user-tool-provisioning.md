@@ -192,7 +192,7 @@ This step is idempotent: if all tools are already installed at the declared vers
 
 ### 7. Spec updates
 
-#### Dev specs (`specs/dev/sandbox-image.md`)
+#### Dev specs (`specs/items/dev/sandbox-image.md`)
 
 Add new requirements:
 
@@ -206,13 +206,13 @@ Update existing:
 - **SBD-002**: Change "the build shall install Claude Code, Gemini CLI, and OpenCode via npm and install Codex from a pinned standalone Linux musl release binary" → "the build shall install all agent CLIs via mise using npm and github backends".
 - **SBD-014**: Add mise shims to `PATH` ordering: `~/.local/share/mise/shims` before `~/.local/bin`.
 
-#### Dev specs (`specs/dev/lifecycle.md`)
+#### Dev specs (`specs/items/dev/lifecycle.md`)
 
 Add:
 
 - **LCD-007**: Where container startup entrypoint runs, it shall reconcile mise with `mise trust` + `mise install --locked` and emit reconcile state for `boss start` warning surfacing ([DR-004 §5](../decisions/004-user-tool-provisioning.md)).
 
-#### Test specs (`specs/test/sandbox-image.md`)
+#### Test specs (`specs/items/test/sandbox-image.md`)
 
 Add:
 
@@ -221,7 +221,7 @@ Add:
 - **SBT-048**: Where `boss-sandbox:<tag>` is built, `/etc/mise/mise.lock` shall exist and contain version entries for all declared tools ([SBD-026](../items/dev/sandbox-image.md#sbd-026)).
 - **SBT-049**: Where `boss-sandbox:<tag>` is built, `claude --version`, `codex --help`, `gemini --version`, and `opencode --version` shall each exit 0 via mise shims ([SBD-027](../items/dev/sandbox-image.md#sbd-027)).
 
-#### User specs (`specs/user/sandbox-image.md`)
+#### User specs (`specs/items/user/sandbox-image.md`)
 
 Update SBX-011 or add:
 

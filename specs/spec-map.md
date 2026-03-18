@@ -11,9 +11,10 @@ Spec files are source of truth.
 ```text
 decisions/   Architectural decision records (DR-NNN)
 iterations/  Iteration records (IR-NNN)
-dev/         Implementation requirements
-user/        User-facing behavior
-test/        Verification criteria
+items/       Spec item files
+    user/        User-facing behavior
+    dev/         Implementation requirements
+    test/        Verification criteria
 ```
 
 Specs use GEARS syntax ([META-001](items/user/meta.md#meta-001)).
