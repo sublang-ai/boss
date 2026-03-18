@@ -13,7 +13,7 @@ commands that prepare and launch the local Boss sandbox.
 Where `boss init` verifies the container runtime, initialization
 shall refuse to proceed if the runtime is not operating in rootless
 mode
-([DR-001 §1](../decisions/001-sandbox-architecture.md#1-oci-container-as-the-sandbox-boundary)).
+([DR-001 §1](../../decisions/001-sandbox-architecture.md#1-oci-container-as-the-sandbox-boundary)).
 
 ## Container Hardening
 
@@ -23,7 +23,7 @@ Where `boss start` launches the sandbox container, the container
 shall run with all Linux capabilities dropped, new-privilege
 acquisition disabled, and a read-only root filesystem with a writable
 tmpfs at `/tmp`
-([DR-001 §1](../decisions/001-sandbox-architecture.md#1-oci-container-as-the-sandbox-boundary)).
+([DR-001 §1](../../decisions/001-sandbox-architecture.md#1-oci-container-as-the-sandbox-boundary)).
 
 ## Headless Authentication
 
@@ -32,16 +32,16 @@ tmpfs at `/tmp`
 Where `boss init` creates `~/.boss/.env`, the template shall
 include placeholders for `CLAUDE_CODE_OAUTH_TOKEN`,
 `ANTHROPIC_API_KEY`, `CODEX_API_KEY`, and `GEMINI_API_KEY`
-([DR-001 §3](../decisions/001-sandbox-architecture.md#3-authentication),
-[DR-002 §1](../decisions/002-iteron-cli-commands.md#1-boss-init)).
+([DR-001 §3](../../decisions/001-sandbox-architecture.md#3-authentication),
+[DR-002 §1](../../decisions/002-iteron-cli-commands.md#1-boss-init)).
 
 ### LCD-002
 
 Where `boss start` launches the sandbox container,
 authentication variables from `~/.boss/.env` shall be exposed to
 processes in the container environment
-([DR-001 §3](../decisions/001-sandbox-architecture.md#3-authentication),
-[DR-002 §2](../decisions/002-iteron-cli-commands.md#2-boss-start)).
+([DR-001 §3](../../decisions/001-sandbox-architecture.md#3-authentication),
+[DR-002 §2](../../decisions/002-iteron-cli-commands.md#2-boss-start)).
 
 ## SSH Authentication
 
@@ -55,14 +55,14 @@ preserving any user SSH config. SSH tries keys in the order listed
 in `keyfiles`. When SSH is off or unconfigured, the managed file
 shall be removed to prevent stale `IdentityFile` directives from
 persisting on the volume
-([DR-003 §2](../decisions/003-runtime-profiled-auth.md#2-local-profile)).
+([DR-003 §2](../../decisions/003-runtime-profiled-auth.md#2-local-profile)).
 
 ### LCD-006
 
 The sandbox image shall pre-seed `/etc/ssh/ssh_known_hosts` with
 GitHub and GitLab.com host keys and enforce `StrictHostKeyChecking yes`
 via `/etc/ssh/ssh_config.d/boss.conf`
-([DR-003 §2](../decisions/003-runtime-profiled-auth.md#2-local-profile)).
+([DR-003 §2](../../decisions/003-runtime-profiled-auth.md#2-local-profile)).
 
 ## Tool Provisioning
 
@@ -85,4 +85,4 @@ on `(fingerprint, failed_step, error_class)` so routine restarts stay
 quiet while image upgrades re-surface warnings.
 Where `boss start` launches the sandbox container, it shall read this
 state file after startup and surface the latest warning when
-`should_warn=1` ([DR-004 §5](../decisions/004-user-tool-provisioning.md)).
+`should_warn=1` ([DR-004 §5](../../decisions/004-user-tool-provisioning.md)).

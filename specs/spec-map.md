@@ -16,8 +16,8 @@ user/        User-facing behavior
 test/        Verification criteria
 ```
 
-Specs use GEARS syntax ([META-001](user/meta.md#meta-001)).
-Authoring rules: [dev/style.md](dev/style.md).
+Specs use GEARS syntax ([META-001](items/user/meta.md#meta-001)).
+Authoring rules: [dev/style.md](items/dev/style.md).
 
 ## Decisions
 
@@ -48,30 +48,30 @@ Authoring rules: [dev/style.md](dev/style.md).
 
 ## Spec Files
 
-### `dev/`
+### `items/dev/`
 
 | File | Summary |
 | --- | --- |
-| [git.md](dev/git.md) | Commit message format and AI co-authorship trailers |
-| [docs.md](dev/docs.md) | User documentation coverage: install, CLI reference, agents, workspaces, tmux, troubleshooting |
-| [lifecycle.md](dev/lifecycle.md) | Rootless enforcement, container hardening, env template, env exposure |
-| [release.md](dev/release.md) | Semantic versioning, changelog, npm publish with provenance |
-| [sandbox-image.md](dev/sandbox-image.md) | Dockerfile, agent installs, runtime defaults, security hardening, image size budget, headless auth config, vulnerability scanning |
-| [style.md](dev/style.md) | Spec naming, ID format, GEARS syntax, cross-refs, record format, and SPDX headers |
-| [workspace.md](dev/workspace.md) | Session identity format, input constraints, open/ls/rm behavior |
+| [git.md](items/dev/git.md) | Commit message format and AI co-authorship trailers |
+| [docs.md](items/dev/docs.md) | User documentation coverage: install, CLI reference, agents, workspaces, tmux, troubleshooting |
+| [lifecycle.md](items/dev/lifecycle.md) | Rootless enforcement, container hardening, env template, env exposure |
+| [release.md](items/dev/release.md) | Semantic versioning, changelog, npm publish with provenance |
+| [sandbox-image.md](items/dev/sandbox-image.md) | Dockerfile, agent installs, runtime defaults, security hardening, image size budget, headless auth config, vulnerability scanning |
+| [style.md](items/dev/style.md) | Spec naming, ID format, GEARS syntax, cross-refs, record format, and SPDX headers |
+| [workspace.md](items/dev/workspace.md) | Session identity format, input constraints, open/ls/rm behavior |
 
-### `user/`
-
-| File | Summary |
-| --- | --- |
-| [meta.md](user/meta.md) | GEARS syntax definition and test-spec mapping |
-| [sandbox-image.md](user/sandbox-image.md) | Agent availability, runtime behavior, headless auth per agent |
-| [workspace.md](user/workspace.md) | Argument resolution, session reattach, ls tree view, rm, error handling |
-
-### `test/`
+### `items/user/`
 
 | File | Summary |
 | --- | --- |
-| [spdx-headers.md](test/spdx-headers.md) | Copyright and license header presence checks |
-| [sandbox-image.md](test/sandbox-image.md) | Build, security, config, script, image size, auth, autonomous execution, container hardening, and vulnerability scanning checks |
-| [workspace.md](test/workspace.md) | Session identity, input constraints, open/ls/rm, container-down handling |
+| [meta.md](items/user/meta.md) | GEARS syntax definition and test-spec mapping |
+| [sandbox-image.md](items/user/sandbox-image.md) | Agent availability, runtime behavior, headless auth per agent |
+| [workspace.md](items/user/workspace.md) | Argument resolution, session reattach, ls tree view, rm, error handling |
+
+### `items/test/`
+
+| File | Summary |
+| --- | --- |
+| [spdx-headers.md](items/test/spdx-headers.md) | Copyright and license header presence checks |
+| [sandbox-image.md](items/test/sandbox-image.md) | Build, security, config, script, image size, auth, autonomous execution, container hardening, and vulnerability scanning checks |
+| [workspace.md](items/test/workspace.md) | Session identity, input constraints, open/ls/rm, container-down handling |

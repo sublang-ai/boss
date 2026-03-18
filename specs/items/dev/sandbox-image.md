@@ -12,7 +12,7 @@ Boss sandbox image.
 
 Where the local sandbox image is built, the Dockerfile shall use
 `node:22-bookworm-slim`
-([DR-001 §1](../decisions/001-sandbox-architecture.md#1-oci-container-as-the-sandbox-boundary)).
+([DR-001 §1](../../decisions/001-sandbox-architecture.md#1-oci-container-as-the-sandbox-boundary)).
 
 ### SBD-002
 
@@ -21,8 +21,8 @@ baseline agent CLIs (claude, codex) via mise using npm and
 github backends. On-demand agent CLIs (gemini, opencode) shall
 be declared in a separate on-demand config, locked at build time,
 but not pre-installed
-([DR-001 Context](../decisions/001-sandbox-architecture.md#context),
-[DR-004 §3](../decisions/004-user-tool-provisioning.md)).
+([DR-001 Context](../../decisions/001-sandbox-architecture.md#context),
+[DR-004 §3](../../decisions/004-user-tool-provisioning.md)).
 
 ### SBD-003
 
@@ -32,7 +32,7 @@ shall be:
 `codex -> codex`,
 `gemini -> gemini`,
 `opencode -> opencode`
-([DR-002 Workspace Model](../decisions/002-iteron-cli-commands.md#workspace-model)).
+([DR-002 Workspace Model](../../decisions/002-iteron-cli-commands.md#workspace-model)).
 
 ## Runtime Defaults
 
@@ -42,7 +42,7 @@ Where the image is built, runtime defaults shall include user
 `boss` (`uid=1000`, `gid=1000`), `tini` as PID 1, `bash`
 as the default command, and `en_US.UTF-8` locale (`LANG` and
 `LC_ALL`)
-([DR-001 §1](../decisions/001-sandbox-architecture.md#1-oci-container-as-the-sandbox-boundary)).
+([DR-001 §1](../../decisions/001-sandbox-architecture.md#1-oci-container-as-the-sandbox-boundary)).
 
 ### SBD-005
 
@@ -59,8 +59,8 @@ provision default config files for agents and tmux at:
 `/home/boss/.config/opencode/AGENTS.md`,
 `/etc/tmux.conf`, and
 `/home/boss/.tmux.conf`
-([DR-001 §1](../decisions/001-sandbox-architecture.md#1-oci-container-as-the-sandbox-boundary),
-[DR-001 §3](../decisions/001-sandbox-architecture.md#3-authentication)).
+([DR-001 §1](../../decisions/001-sandbox-architecture.md#1-oci-container-as-the-sandbox-boundary),
+[DR-001 §3](../../decisions/001-sandbox-architecture.md#3-authentication)).
 
 ## Build Script
 
@@ -92,7 +92,7 @@ platform.
 
 Where the sandbox image is built, container defaults shall set
 `NO_BROWSER=true` for headless Gemini OAuth
-([DR-001 §3](../decisions/001-sandbox-architecture.md#3-authentication)).
+([DR-001 §3](../../decisions/001-sandbox-architecture.md#3-authentication)).
 
 ### SBD-011
 
@@ -100,7 +100,7 @@ Where Boss resolves host OpenCode credentials, the supported
 source path shall be
 `$XDG_DATA_HOME/opencode/auth.json` when `XDG_DATA_HOME` is set,
 otherwise `~/.local/share/opencode/auth.json`
-([DR-001 §3](../decisions/001-sandbox-architecture.md#3-authentication)).
+([DR-001 §3](../../decisions/001-sandbox-architecture.md#3-authentication)).
 
 ### SBD-012
 
@@ -109,14 +109,14 @@ container start, launch behavior shall include a mapped credential
 file at `/home/boss/.local/share/opencode/auth.json` that is
 readable and writable by the container runtime user, including
 credential refresh
-([DR-001 §3](../decisions/001-sandbox-architecture.md#3-authentication)).
+([DR-001 §3](../../decisions/001-sandbox-architecture.md#3-authentication)).
 
 ### SBD-013
 
 Where the supported host OpenCode credential file is absent at
 container start, launch behavior shall omit any OpenCode
 credential file mapping
-([DR-001 §3](../decisions/001-sandbox-architecture.md#3-authentication)).
+([DR-001 §3](../../decisions/001-sandbox-architecture.md#3-authentication)).
 
 ## User-Local Tool Layer
 
@@ -125,9 +125,9 @@ credential file mapping
 Where the image is built, the Dockerfile shall create
 `/home/boss/.local/bin` owned by `boss:boss` and set `PATH`
 to `~/.local/share/mise/shims:~/.local/bin:~/.local/share/npm-global/bin:~/.local/share/cargo/bin:$PATH` via `ENV`
-([DR-001 §6](../decisions/001-sandbox-architecture.md#6-user-local-tool-layer),
-[DR-004 §3](../decisions/004-user-tool-provisioning.md),
-[DR-005 §1](../decisions/005-package-manager-environment.md#1-xdg-environment-variables)).
+([DR-001 §6](../../decisions/001-sandbox-architecture.md#6-user-local-tool-layer),
+[DR-004 §3](../../decisions/004-user-tool-provisioning.md),
+[DR-005 §1](../../decisions/005-package-manager-environment.md#1-xdg-environment-variables)).
 
 ### SBD-015
 
@@ -135,7 +135,7 @@ Where `boss start` launches a container, the start sequence
 shall run `mkdir -p /home/boss/.local/bin` inside the container
 after volume mount, ensuring the directory exists on pre-existing
 `boss-data` volumes
-([DR-001 §6](../decisions/001-sandbox-architecture.md#6-user-local-tool-layer)).
+([DR-001 §6](../../decisions/001-sandbox-architecture.md#6-user-local-tool-layer)).
 
 ## Vulnerability Scanning
 
@@ -179,7 +179,7 @@ shall enable OSC 52 clipboard passthrough (`set-clipboard on`,
 
 Where the image is built, tmux system configuration shall set
 `default-terminal` to `screen-256color` for agent TUI compatibility
-([DR-001 §2](../decisions/001-sandbox-architecture.md#2-tmux-mapping)).
+([DR-001 §2](../../decisions/001-sandbox-architecture.md#2-tmux-mapping)).
 
 ### SBD-021
 
@@ -210,26 +210,26 @@ this file on startup to restore saved preferences.
 
 Where the image is built, `mise` shall be installed at a pinned
 version and its binary shall be on `PATH`
-([DR-004 §2](../decisions/004-user-tool-provisioning.md)).
+([DR-004 §2](../../decisions/004-user-tool-provisioning.md)).
 
 ### SBD-025
 
 Where the image is built, `/etc/mise/config.toml` shall declare
 baseline agent CLIs (claude, codex) and enforce a backend denylist
 allowing only `npm` and `github` backends
-([DR-004 §3, §8](../decisions/004-user-tool-provisioning.md)).
+([DR-004 §3, §8](../../decisions/004-user-tool-provisioning.md)).
 
 ### SBD-026
 
 Where the image is built, `/etc/mise/mise.lock` shall contain
 resolved versions for all declared baseline tools
-([DR-004 §6](../decisions/004-user-tool-provisioning.md)).
+([DR-004 §6](../../decisions/004-user-tool-provisioning.md)).
 
 ### SBD-027
 
 Where the image is built, baseline agent CLI binaries shall be
 invocable via mise shims on `PATH`
-([DR-004 §3](../decisions/004-user-tool-provisioning.md)).
+([DR-004 §3](../../decisions/004-user-tool-provisioning.md)).
 
 ### SBD-035
 
@@ -263,14 +263,14 @@ package-manager paths:
 `XDG_CONFIG_HOME`, `XDG_CACHE_HOME`, `XDG_DATA_HOME`, `XDG_STATE_HOME`,
 `PYTHONUSERBASE`, `PIP_USER`, `NPM_CONFIG_PREFIX`, `GOPATH`, `GOBIN`,
 `CARGO_HOME`, and `RUSTUP_HOME`
-([DR-005 §1](../decisions/005-package-manager-environment.md#1-xdg-environment-variables)).
+([DR-005 §1](../../decisions/005-package-manager-environment.md#1-xdg-environment-variables)).
 
 ### SBD-030
 
 Where the image is built, `/usr/local/bin/sudo` shall be a root-owned
 mock shim that runs allowed forms unprivileged with a context line and
 rejects user/group switching and interactive shell forms
-([DR-005 §2](../decisions/005-package-manager-environment.md#2-mock-sudo-shim)).
+([DR-005 §2](../../decisions/005-package-manager-environment.md#2-mock-sudo-shim)).
 
 ### SBD-031
 
@@ -278,7 +278,7 @@ Where the image is built, `/opt/defaults/` shall contain image-owned
 default dotfiles/configs, and container startup entrypoint behavior
 shall seed missing files from `/opt/defaults/` into `$HOME` without
 overwriting existing files
-([DR-005 §3](../decisions/005-package-manager-environment.md#3-entrypoint-defaults-seeding)).
+([DR-005 §3](../../decisions/005-package-manager-environment.md#3-entrypoint-defaults-seeding)).
 
 ### SBD-032
 
@@ -287,13 +287,13 @@ Where the image is built, Dockerfile `ENV` shall set
 behavior shall record this value at
 `$XDG_STATE_HOME/.boss-image-version` and emit a diagnostic when the
 stored value changes
-([DR-005 §3](../decisions/005-package-manager-environment.md#3-entrypoint-defaults-seeding)).
+([DR-005 §3](../../decisions/005-package-manager-environment.md#3-entrypoint-defaults-seeding)).
 
 ### SBD-033
 
 Where the image is built, baseline developer CLIs shall be preinstalled
 and executable on `PATH`: `gpg`, `tree`, `gh`, and `glab`
-([DR-005](../decisions/005-package-manager-environment.md)).
+([DR-005](../../decisions/005-package-manager-environment.md)).
 
 ### SBD-034
 
@@ -310,4 +310,4 @@ and record reconciliation state at `$XDG_STATE_HOME/.boss-mise-reconcile.state`.
 The state shall include a fingerprint derived from image version plus
 config+lock hashes, and a `should_warn` flag deduped by
 `(fingerprint, failed_step, error_class)`
-([DR-004 §5](../decisions/004-user-tool-provisioning.md#5-reconciliation-policy-on-container-start)).
+([DR-004 §5](../../decisions/004-user-tool-provisioning.md#5-reconciliation-policy-on-container-start)).

@@ -68,7 +68,7 @@ $HOME/.local/share/mise/shims:$HOME/.local/bin:$HOME/.local/share/npm-global/bin
 Mise shims precede all user-local directories so that mise-managed tool
 versions shadow any same-named binaries installed directly via native package
 managers. `~/.local/share/mise/shims` and `~/.local/bin` are already
-required by [SBD-014](../dev/sandbox-image.md#sbd-014); this DR extends
+required by [SBD-014](../items/dev/sandbox-image.md#sbd-014); this DR extends
 that prefix with the npm-global and cargo binary directories.
 
 **Venv exception:** `PIP_USER=1` conflicts with virtualenv: pip hard-fails
@@ -172,7 +172,7 @@ The image shall set a Dockerfile `ENV` variable `BOSS_IMAGE_VERSION` to the
 version string from `package.json`, passed at image build time via a Docker
 build argument. The build shall fail if the argument is empty or absent.
 For release builds, the release pipeline additionally verifies that this value
-matches the git tag per [RELEASE-002](../dev/release.md#release-002); that
+matches the git tag per [RELEASE-002](../items/dev/release.md#release-002); that
 parity check is a release-pipeline concern, not a build-time Dockerfile
 constraint. The entrypoint shall record
 `$BOSS_IMAGE_VERSION` in `$XDG_STATE_HOME/.boss-image-version` on every start.

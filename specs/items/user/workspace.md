@@ -13,7 +13,7 @@ commands.
 Where a user runs `boss open [workspace] [command] [-- <args>]`,
 the CLI shall create or attach to a workspace session in the
 sandbox container, and positional argument resolution shall
-follow ([DR-002 §4](../decisions/002-iteron-cli-commands.md#4-boss-open-workspace-command----args)):
+follow ([DR-002 §4](../../decisions/002-iteron-cli-commands.md#4-boss-open-workspace-command----args)):
 
 - 0 args: default shell in `~`
 - 1 arg: default shell in `~/<workspace>` (use `~` for home)
@@ -30,7 +30,7 @@ Where a user runs `boss open <workspace> <agent>` and then
 detaches (Ctrl-B D), when the user runs the same command again,
 the CLI shall reattach to the existing session without creating
 a duplicate
-([DR-002 §4](../decisions/002-iteron-cli-commands.md#4-boss-open-workspace-command----args)).
+([DR-002 §4](../../decisions/002-iteron-cli-commands.md#4-boss-open-workspace-command----args)).
 
 ## Listing Sessions
 
@@ -39,7 +39,7 @@ a duplicate
 Where a user runs `boss ls`, the CLI shall display a tree
 view grouping running sessions by workspace, showing command
 name, attached/detached status, and uptime for each session
-([DR-002 §5](../decisions/002-iteron-cli-commands.md#5-boss-ls)).
+([DR-002 §5](../../decisions/002-iteron-cli-commands.md#5-boss-ls)).
 
 ## Removing Workspaces
 
@@ -50,7 +50,7 @@ all sessions in that workspace and remove the workspace
 directory. When active sessions exist, the CLI shall prompt
 for confirmation. The CLI shall refuse `boss rm ~` and shall
 exit non-zero when workspace argument is missing
-([DR-002 §6](../decisions/002-iteron-cli-commands.md#6-boss-rm-workspace)).
+([DR-002 §6](../../decisions/002-iteron-cli-commands.md#6-boss-rm-workspace)).
 
 ## Error Handling
 
@@ -61,4 +61,4 @@ Where the sandbox container is not running, when a user runs
 message indicating the container is not running and suggesting
 `boss start`.  `boss open` shall auto-start the container
 instead of failing
-([DR-002 §4](../decisions/002-iteron-cli-commands.md#4-boss-open-workspace-command----args)).
+([DR-002 §4](../../decisions/002-iteron-cli-commands.md#4-boss-open-workspace-command----args)).

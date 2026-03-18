@@ -12,7 +12,7 @@ sandbox image.
 
 Where the image source exists, when a runtime builds
 `boss-sandbox:<tag>`, the build shall exit 0
-([DR-001 §1](../decisions/001-sandbox-architecture.md#1-oci-container-as-the-sandbox-boundary)).
+([DR-001 §1](../../decisions/001-sandbox-architecture.md#1-oci-container-as-the-sandbox-boundary)).
 
 ### SBT-002
 
@@ -20,26 +20,26 @@ Where `boss-sandbox:<tag>` is built, when `claude --version` and
 `codex --help` run in the container, each command shall exit 0.
 On-demand agents (`gemini`, `opencode`) are verified after
 first-use installation via `boss open`
-([DR-001 Context](../decisions/001-sandbox-architecture.md#context)).
+([DR-001 Context](../../decisions/001-sandbox-architecture.md#context)).
 
 ### SBT-003
 
 Where `boss-sandbox:<tag>` is built, when `cat /proc/1/comm`
 runs in the container, output shall be `tini`
-([DR-001 §1](../decisions/001-sandbox-architecture.md#1-oci-container-as-the-sandbox-boundary)).
+([DR-001 §1](../../decisions/001-sandbox-architecture.md#1-oci-container-as-the-sandbox-boundary)).
 
 ### SBT-004
 
 Where `boss-sandbox:<tag>` is built, when `id` runs in the
 container, output shall include `uid=1000(boss)` and
 `gid=1000(boss)`
-([DR-001 §1](../decisions/001-sandbox-architecture.md#1-oci-container-as-the-sandbox-boundary)).
+([DR-001 §1](../../decisions/001-sandbox-architecture.md#1-oci-container-as-the-sandbox-boundary)).
 
 ### SBT-012
 
 Where `boss-sandbox:<tag>` is built, when `tmux -V` runs in the
 container, the command shall exit 0 and print a tmux version
-([DR-001 §2](../decisions/001-sandbox-architecture.md#2-tmux-mapping)).
+([DR-001 §2](../../decisions/001-sandbox-architecture.md#2-tmux-mapping)).
 
 ### SBT-045
 
@@ -53,19 +53,19 @@ container, `LANG` and `LC_ALL` shall both be `en_US.UTF-8`
 
 Where `boss-sandbox:<tag>` runs read-only, when a process
 writes outside `/tmp` and `/home/boss`, the write shall fail
-([DR-001 §1](../decisions/001-sandbox-architecture.md#1-oci-container-as-the-sandbox-boundary)).
+([DR-001 §1](../../decisions/001-sandbox-architecture.md#1-oci-container-as-the-sandbox-boundary)).
 
 ### SBT-006
 
 Where `boss-sandbox:<tag>` runs read-only with tmpfs `/tmp`,
 when a process writes inside `/tmp`, the write shall succeed
-([DR-001 §1](../decisions/001-sandbox-architecture.md#1-oci-container-as-the-sandbox-boundary)).
+([DR-001 §1](../../decisions/001-sandbox-architecture.md#1-oci-container-as-the-sandbox-boundary)).
 
 ### SBT-007
 
 Where `boss-sandbox:<tag>` is built, the SUID/SGID file count
 from `find / -perm /6000 -type f` shall be `0`
-([DR-001 §1](../decisions/001-sandbox-architecture.md#1-oci-container-as-the-sandbox-boundary)).
+([DR-001 §1](../../decisions/001-sandbox-architecture.md#1-oci-container-as-the-sandbox-boundary)).
 
 ### SBT-008
 
@@ -82,14 +82,14 @@ exist:
 `/home/boss/.config/opencode/AGENTS.md`,
 `/etc/tmux.conf`, and
 `/home/boss/.tmux.conf`
-([DR-001 §1](../decisions/001-sandbox-architecture.md#1-oci-container-as-the-sandbox-boundary),
-[DR-001 §3](../decisions/001-sandbox-architecture.md#3-authentication)).
+([DR-001 §1](../../decisions/001-sandbox-architecture.md#1-oci-container-as-the-sandbox-boundary),
+[DR-001 §3](../../decisions/001-sandbox-architecture.md#3-authentication)).
 
 ### SBT-009
 
 Where `boss-sandbox:<tag>` is built, the default Claude config
 shall include onboarding bypass and tool-permission settings
-([DR-001 §3](../decisions/001-sandbox-architecture.md#3-authentication)).
+([DR-001 §3](../../decisions/001-sandbox-architecture.md#3-authentication)).
 
 ## Script Checks
 
@@ -440,7 +440,7 @@ Where interactive Bash loads the default `.bashrc` in the container,
 `VIRTUAL_ENV` is set then the guard shall unset `PIP_USER`, and when
 `VIRTUAL_ENV` is removed after a venv-active state, the guard shall
 restore `PIP_USER=1`
-([DR-005 §1](../decisions/005-package-manager-environment.md#1-xdg-environment-variables)).
+([DR-005 §1](../../decisions/005-package-manager-environment.md#1-xdg-environment-variables)).
 
 ### SBT-058
 

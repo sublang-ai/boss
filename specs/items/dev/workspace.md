@@ -13,7 +13,7 @@ commands (`open`, `ls`, `rm`) and session identity.
 Where a workspace session is represented, its identity shall be
 `<command>@<location>` across create/list/remove
 flows
-([DR-002 Workspace Model](../decisions/002-iteron-cli-commands.md#workspace-model)).
+([DR-002 Workspace Model](../../decisions/002-iteron-cli-commands.md#workspace-model)).
 
 ### WSD-002
 
@@ -28,7 +28,7 @@ name shall be treated as command and location shall default to `~`.
 
 Where agent names, command names, or workspace names are used in
 session identity, each shall reject the reserved delimiter `@`
-([DR-002 §4](../decisions/002-iteron-cli-commands.md#4-boss-open-workspace-command----args)).
+([DR-002 §4](../../decisions/002-iteron-cli-commands.md#4-boss-open-workspace-command----args)).
 
 ### WSD-004
 
@@ -50,7 +50,7 @@ is absent, the CLI shall create it before launching the session.
 Where `boss ls` returns running sessions, including non-Boss or
 legacy names, it shall tolerate malformed session metadata by ignoring
 invalid rows rather than failing the command
-([DR-002 §5](../decisions/002-iteron-cli-commands.md#5-boss-ls)).
+([DR-002 §5](../../decisions/002-iteron-cli-commands.md#5-boss-ls)).
 
 ### WSD-007
 
