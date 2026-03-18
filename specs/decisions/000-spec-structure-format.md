@@ -101,6 +101,14 @@ IRs may be temporary and must not be cited by DRs or items.
 - Clear positions of directories and files
 - Flexible expression of design and implementation
 
+### Transition
+
+The existing spec corpus does not yet fully conform to this DR.
+Known gaps — `spec-map.md` rename to `map.md`, creation of root
+`meta.md`, IR section headings, item `## Intent` sections, and test
+`Verifies:` metadata — are tracked and resolved by
+[IR-010](../iterations/010-adopt-spex-scaffold.md).
+
 ## References
 
 [1]: https://github.com/npryce/adr-tools "ADR Tools"
