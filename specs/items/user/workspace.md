@@ -3,7 +3,9 @@
 
 # WORKSPACE: User-Facing Workspace Behavior
 
-This component defines user-visible behavior of Boss workspace
+## Intent
+
+This spec defines user-visible behavior of Boss workspace
 commands.
 
 ## Opening Sessions

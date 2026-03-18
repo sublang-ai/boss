@@ -3,7 +3,9 @@
 
 # RELEASE: Release Workflow
 
-This component defines release workflow rules for the project.
+## Intent
+
+This spec defines release workflow rules for the project.
 
 ## Versioning
 

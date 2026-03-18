@@ -17,8 +17,8 @@ items/       Spec item files
     test/        Verification criteria
 ```
 
-Specs use GEARS syntax ([META-001](items/user/meta.md#meta-001)).
-Authoring rules: [dev/style.md](items/dev/style.md).
+Specs use GEARS syntax ([META-6](meta.md#meta-6)).
+Authoring rules: [meta.md](meta.md).
 
 ## Decisions
 
@@ -58,14 +58,12 @@ Authoring rules: [dev/style.md](items/dev/style.md).
 | [lifecycle.md](items/dev/lifecycle.md) | Rootless enforcement, container hardening, env template, env exposure |
 | [release.md](items/dev/release.md) | Semantic versioning, changelog, npm publish with provenance |
 | [sandbox-image.md](items/dev/sandbox-image.md) | Dockerfile, agent installs, runtime defaults, security hardening, image size budget, headless auth config, vulnerability scanning |
-| [style.md](items/dev/style.md) | Spec naming, ID format, GEARS syntax, cross-refs, record format, and SPDX headers |
 | [workspace.md](items/dev/workspace.md) | Session identity format, input constraints, open/ls/rm behavior |
 
 ### `items/user/`
 
 | File | Summary |
 | --- | --- |
-| [meta.md](items/user/meta.md) | GEARS syntax definition and test-spec mapping |
 | [sandbox-image.md](items/user/sandbox-image.md) | Agent availability, runtime behavior, headless auth per agent |
 | [workspace.md](items/user/workspace.md) | Argument resolution, session reattach, ls tree view, rm, error handling |
 

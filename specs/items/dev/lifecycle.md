@@ -3,7 +3,9 @@
 
 # LIFECYCLE: Container Lifecycle Requirements
 
-This component defines implementation requirements for lifecycle
+## Intent
+
+This spec defines implementation requirements for lifecycle
 commands that prepare and launch the local Boss sandbox.
 
 ## Initialization

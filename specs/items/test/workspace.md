@@ -3,7 +3,9 @@
 
 # WORKSPACE: Workspace Interaction Verification
 
-This component defines verification checks for workspace
+## Intent
+
+This spec defines verification checks for workspace
 requirements.
 
 ## Session Identity

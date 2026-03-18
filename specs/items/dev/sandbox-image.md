@@ -3,7 +3,9 @@
 
 # SANDBOX: Sandbox Image Build and Configuration
 
-This component defines implementation requirements for the local
+## Intent
+
+This spec defines implementation requirements for the local
 Boss sandbox image.
 
 ## Build Inputs

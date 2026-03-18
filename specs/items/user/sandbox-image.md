@@ -3,7 +3,9 @@
 
 # SANDBOX: User-Facing Sandbox Image Behavior
 
-This component defines user-visible behavior of the local Boss
+## Intent
+
+This spec defines user-visible behavior of the local Boss
 sandbox image.
 
 ## Availability

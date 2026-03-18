@@ -3,7 +3,9 @@
 
 # WORKSPACE: Workspace Interaction Requirements
 
-This component defines normative behavior requirements for workspace
+## Intent
+
+This spec defines normative behavior requirements for workspace
 commands (`open`, `ls`, `rm`) and session identity.
 
 ## Session Identity

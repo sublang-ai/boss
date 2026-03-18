@@ -3,7 +3,9 @@
 
 # DOC: User Documentation
 
-This component defines requirements for user-facing documentation.
+## Intent
+
+This spec defines requirements for user-facing documentation.
 
 ## Coverage
 

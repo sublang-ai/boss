@@ -3,6 +3,10 @@
 
 # SPDX: SPDX Headers
 
+## Intent
+
+This spec defines acceptance tests for SPDX copyright and license headers.
+
 ## Exclusions
 
 - No comment syntax: e.g., JSON, binaries

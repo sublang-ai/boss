@@ -3,7 +3,9 @@
 
 # SANDBOX: Sandbox Image Verification
 
-This component defines verification checks for the local Boss
+## Intent
+
+This spec defines verification checks for the local Boss
 sandbox image.
 
 ## Core Checks
