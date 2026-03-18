@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: Apache-2.0 -->
 <!-- SPDX-FileCopyrightText: 2026 SubLang International <https://sublang.ai> -->
 
-# SANDBOX: Sandbox Image Build and Configuration
+# SAND: Sandbox Image Build and Configuration
 
 ## Intent
 
@@ -10,13 +10,13 @@ Boss sandbox image.
 
 ## Build Inputs
 
-### SBD-001
+### SAND-1
 
 Where the local sandbox image is built, the Dockerfile shall use
 `node:22-bookworm-slim`
 ([DR-001 §1](../../decisions/001-sandbox-architecture.md#1-oci-container-as-the-sandbox-boundary)).
 
-### SBD-002
+### SAND-2
 
 Where agent runtimes are installed, the build shall install
 baseline agent CLIs (claude, codex) via mise using npm and
@@ -26,7 +26,7 @@ but not pre-installed
 ([DR-001 Context](../../decisions/001-sandbox-architecture.md#context),
 [DR-004 §3](../../decisions/004-user-tool-provisioning.md)).
 
-### SBD-003
+### SAND-3
 
 Where agent names are resolved for CLI sessions, the mapping
 shall be:
@@ -38,7 +38,7 @@ shall be:
 
 ## Runtime Defaults
 
-### SBD-004
+### SAND-4
 
 Where the image is built, runtime defaults shall include user
 `boss` (`uid=1000`, `gid=1000`), `tini` as PID 1, `bash`
@@ -46,7 +46,7 @@ as the default command, and `en_US.UTF-8` locale (`LANG` and
 `LC_ALL`)
 ([DR-001 §1](../../decisions/001-sandbox-architecture.md#1-oci-container-as-the-sandbox-boundary)).
 
-### SBD-005
+### SAND-5
 
 Where the image is built, it shall remove SUID/SGID bits and
 provision default config files for agents and tmux at:
@@ -66,13 +66,13 @@ provision default config files for agents and tmux at:
 
 ## Build Script
 
-### SBD-006
+### SAND-6
 
 Where `scripts/build-image.sh` runs a native build, it shall
 select a functional runtime (Podman or Docker) and build
 `boss-sandbox:<tag>` from `image/`.
 
-### SBD-007
+### SAND-7
 
 Where `scripts/build-image.sh` runs in multi-arch mode, the
 script shall require `--push` and publish a
@@ -80,7 +80,7 @@ script shall require `--push` and publish a
 
 ## Image Size
 
-### SBD-008
+### SAND-8
 
 Where a sandbox image is published, the release process shall
 enforce a per-architecture compressed image size budget of at
@@ -90,13 +90,13 @@ platform.
 
 ## Headless Authentication
 
-### SBD-010
+### SAND-9
 
 Where the sandbox image is built, container defaults shall set
 `NO_BROWSER=true` for headless Gemini OAuth
 ([DR-001 §3](../../decisions/001-sandbox-architecture.md#3-authentication)).
 
-### SBD-011
+### SAND-10
 
 Where Boss resolves host OpenCode credentials, the supported
 source path shall be
@@ -104,7 +104,7 @@ source path shall be
 otherwise `~/.local/share/opencode/auth.json`
 ([DR-001 §3](../../decisions/001-sandbox-architecture.md#3-authentication)).
 
-### SBD-012
+### SAND-11
 
 Where the supported host OpenCode credential file exists at
 container start, launch behavior shall include a mapped credential
@@ -113,7 +113,7 @@ readable and writable by the container runtime user, including
 credential refresh
 ([DR-001 §3](../../decisions/001-sandbox-architecture.md#3-authentication)).
 
-### SBD-013
+### SAND-12
 
 Where the supported host OpenCode credential file is absent at
 container start, launch behavior shall omit any OpenCode
@@ -122,7 +122,7 @@ credential file mapping
 
 ## User-Local Tool Layer
 
-### SBD-014
+### SAND-13
 
 Where the image is built, the Dockerfile shall create
 `/home/boss/.local/bin` owned by `boss:boss` and set `PATH`
@@ -131,7 +131,7 @@ to `~/.local/share/mise/shims:~/.local/bin:~/.local/share/npm-global/bin:~/.loca
 [DR-004 §3](../../decisions/004-user-tool-provisioning.md),
 [DR-005 §1](../../decisions/005-package-manager-environment.md#1-xdg-environment-variables)).
 
-### SBD-015
+### SAND-14
 
 Where `boss start` launches a container, the start sequence
 shall run `mkdir -p /home/boss/.local/bin` inside the container
@@ -141,13 +141,13 @@ after volume mount, ensuring the directory exists on pre-existing
 
 ## Vulnerability Scanning
 
-### SBD-016
+### SAND-15
 
 Where the image is built, globally installed npm packages and their
 transitive dependencies shall have no known CRITICAL or HIGH CVEs
-except as permitted by [SBD-017](#sbd-017).
+except as permitted by [SAND-16](#sand-16).
 
-### SBD-017
+### SAND-16
 
 Where a CRITICAL or HIGH CVE has no available fix in the base
 distribution, or where a fix exists upstream but cannot be applied
@@ -157,13 +157,13 @@ justification, and a concrete reassessment trigger (e.g., next
 upstream release, base image upgrade) shall be recorded in the
 accepted-CVE list at `image/.trivyignore`.
 
-### SBD-018
+### SAND-17
 
 Where the image CI workflow runs after a successful build, a
 vulnerability scanner shall fail the pipeline on any CRITICAL or HIGH
 CVE not listed in the accepted-CVE list.
 
-### SBD-019
+### SAND-18
 
 Where a local vulnerability scan is needed, `scripts/scan-image.sh`
 shall accept an optional image tag, apply the accepted-CVE list, and
@@ -171,25 +171,25 @@ exit non-zero on any unaccepted CRITICAL or HIGH CVE.
 
 ## Tmux Configuration
 
-### SBD-020
+### SAND-19
 
 Where the image is built, tmux system configuration at `/etc/tmux.conf`
 shall enable OSC 52 clipboard passthrough (`set-clipboard on`,
 `allow-passthrough on`).
 
-### SBD-028
+### SAND-20
 
 Where the image is built, tmux system configuration shall set
 `default-terminal` to `screen-256color` for agent TUI compatibility
 ([DR-001 §2](../../decisions/001-sandbox-architecture.md#2-tmux-mapping)).
 
-### SBD-021
+### SAND-21
 
 Where the image is built, tmux user configuration at `~/.tmux.conf`
 shall contain only override directives, deferring defaults to the
 system configuration.
 
-### SBD-022
+### SAND-22
 
 Where the image is built, tmux system configuration shall bind
 `MouseDragEnd1Pane` to `copy-selection-and-cancel` in both
@@ -197,7 +197,7 @@ Where the image is built, tmux system configuration shall bind
 `mouse` mode on/off. The toggle shall persist the choice to
 `~/.boss-prefs`.
 
-### SBD-023
+### SAND-23
 
 Where user preferences are persisted inside the container,
 they shall be stored in `~/.boss-prefs` using `key=value`
@@ -208,32 +208,32 @@ this file on startup to restore saved preferences.
 
 ## User-Space Tool Provisioning
 
-### SBD-024
+### SAND-24
 
 Where the image is built, `mise` shall be installed at a pinned
 version and its binary shall be on `PATH`
 ([DR-004 §2](../../decisions/004-user-tool-provisioning.md)).
 
-### SBD-025
+### SAND-25
 
 Where the image is built, `/etc/mise/config.toml` shall declare
 baseline agent CLIs (claude, codex) and enforce a backend denylist
 allowing only `npm` and `github` backends
 ([DR-004 §3, §8](../../decisions/004-user-tool-provisioning.md)).
 
-### SBD-026
+### SAND-26
 
 Where the image is built, `/etc/mise/mise.lock` shall contain
 resolved versions for all declared baseline tools
 ([DR-004 §6](../../decisions/004-user-tool-provisioning.md)).
 
-### SBD-027
+### SAND-27
 
 Where the image is built, baseline agent CLI binaries shall be
 invocable via mise shims on `PATH`
 ([DR-004 §3](../../decisions/004-user-tool-provisioning.md)).
 
-### SBD-035
+### SAND-28
 
 Where the image is built, `/etc/mise/ondemand.toml` shall
 declare on-demand agent CLIs (gemini, opencode) with the same
@@ -241,7 +241,7 @@ backend denylist as the baseline config. `/etc/mise/ondemand.lock`
 shall contain resolved versions locked at build time. These
 tools shall not be pre-installed during the image build.
 
-### SBD-036
+### SAND-29
 
 Where a user runs `boss open` with an on-demand agent, if the
 agent binary is not yet installed, the CLI shall install it
@@ -249,7 +249,7 @@ from the on-demand config+lockfile before launching the tmux
 session. A progress message shall be displayed during
 installation.
 
-### SBD-037
+### SAND-30
 
 Where on-demand agents have been previously installed, the
 entrypoint reconciliation shall reconcile them using the
@@ -258,7 +258,7 @@ pattern as baseline system tools.
 
 ## DR-005 Package Manager Environment
 
-### SBD-029
+### SAND-31
 
 Where the image is built, Dockerfile `ENV` shall define the DR-005
 package-manager paths:
@@ -267,14 +267,14 @@ package-manager paths:
 `CARGO_HOME`, and `RUSTUP_HOME`
 ([DR-005 §1](../../decisions/005-package-manager-environment.md#1-xdg-environment-variables)).
 
-### SBD-030
+### SAND-32
 
 Where the image is built, `/usr/local/bin/sudo` shall be a root-owned
 mock shim that runs allowed forms unprivileged with a context line and
 rejects user/group switching and interactive shell forms
 ([DR-005 §2](../../decisions/005-package-manager-environment.md#2-mock-sudo-shim)).
 
-### SBD-031
+### SAND-33
 
 Where the image is built, `/opt/defaults/` shall contain image-owned
 default dotfiles/configs, and container startup entrypoint behavior
@@ -282,7 +282,7 @@ shall seed missing files from `/opt/defaults/` into `$HOME` without
 overwriting existing files
 ([DR-005 §3](../../decisions/005-package-manager-environment.md#3-entrypoint-defaults-seeding)).
 
-### SBD-032
+### SAND-34
 
 Where the image is built, Dockerfile `ENV` shall set
 `BOSS_IMAGE_VERSION` from a required build argument. Startup entrypoint
@@ -291,13 +291,13 @@ behavior shall record this value at
 stored value changes
 ([DR-005 §3](../../decisions/005-package-manager-environment.md#3-entrypoint-defaults-seeding)).
 
-### SBD-033
+### SAND-35
 
 Where the image is built, baseline developer CLIs shall be preinstalled
 and executable on `PATH`: `gpg`, `tree`, `gh`, and `glab`
 ([DR-005](../../decisions/005-package-manager-environment.md)).
 
-### SBD-034
+### SAND-36
 
 Where the image startup entrypoint runs, it shall perform mise
 reconciliation by:

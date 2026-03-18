@@ -359,7 +359,7 @@ describe('boss start/stop (integration)', { timeout: 360_000, sequential: true }
     }
   });
 
-  // SBT-035: ~/.local/bin reconciled on start with pre-existing volume
+  // SAND-86: ~/.local/bin reconciled on start with pre-existing volume
   it('reconciles ~/.local/bin on start with pre-existing volume', async () => {
     const BIN_DIR = '/home/boss/.local/bin';
     const BACKUP  = `/home/boss/.local/bin.test-backup-${Date.now()}`;

@@ -63,7 +63,7 @@ Rationale for `glab` channel choice:
 
 ### 5. Update specs for DR-005 parity
 
-- Update `SBD-014` to reflect full DR-005 PATH prefix (including npm-global and cargo bin segments).
+- Update `SAND-13` to reflect full DR-005 PATH prefix (including npm-global and cargo bin segments).
 - Add/adjust sandbox-image requirements for:
   - sudo shim existence/behavior,
   - defaults seeding semantics,
@@ -107,7 +107,7 @@ Rationale for `glab` channel choice:
 | --- | --- | --- |
 | `gh` GitHub release asset naming changes break mise resolution | Build-time or reconciliation failure | Pin via lockfile and add explicit platform asset patterns if upstream naming drifts |
 | Debian backports `glab` package changes or is temporarily unavailable | Build failures for `glab` install | Pin to `bookworm-backports` target and fall back to image rebuild with explicit version pin if needed |
-| Additional baseline tools increase image size | Could pressure SBD-008 budget | Keep baseline minimal; validate compressed size in CI after rollout |
+| Additional baseline tools increase image size | Could pressure SAND-8 budget | Keep baseline minimal; validate compressed size in CI after rollout |
 | DR-005 bootstrap logic overwrites user files | User config loss | Use file-granular copy with existence guard exactly as DR-005 specifies |
 | Mixed apt/mise baseline channels confuse maintainers | Incorrect upgrade assumptions | Document channel ownership in specs/docs and enforce via tests |
 

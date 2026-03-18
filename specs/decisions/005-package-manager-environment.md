@@ -68,7 +68,7 @@ $HOME/.local/share/mise/shims:$HOME/.local/bin:$HOME/.local/share/npm-global/bin
 Mise shims precede all user-local directories so that mise-managed tool
 versions shadow any same-named binaries installed directly via native package
 managers. `~/.local/share/mise/shims` and `~/.local/bin` are already
-required by [SBD-014](../items/dev/sandbox-image.md#sbd-014); this DR extends
+required by [SAND-13](../items/dev/sandbox-image.md#sand-13); this DR extends
 that prefix with the npm-global and cargo binary directories.
 
 **Venv exception:** `PIP_USER=1` conflicts with virtualenv: pip hard-fails

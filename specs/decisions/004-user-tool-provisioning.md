@@ -58,8 +58,8 @@ Some agent CLIs (e.g. `gemini`, `opencode`) are declared in a separate
 on-demand config (`/etc/mise/ondemand.toml` + `ondemand.lock`) and are **not**
 pre-installed during image build. Instead, they are installed at first use when
 `boss open` targets that agent, using locked resolution from the image-owned
-on-demand lockfile ([SBD-035](../items/dev/sandbox-image.md#sbd-035),
-[SBD-036](../items/dev/sandbox-image.md#sbd-036)).
+on-demand lockfile ([SAND-28](../items/dev/sandbox-image.md#sand-28),
+[SAND-29](../items/dev/sandbox-image.md#sand-29)).
 
 Language runtimes (Python, Go, Rust) follow the same declaration pattern as
 agent CLIs. Node.js is the one exception: because the base image is

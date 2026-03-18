@@ -213,7 +213,7 @@ describe('boss rm (integration)', { timeout: 120_000, sequential: true }, () => 
 });
 
 describe('boss open on-demand agent install (integration)', { timeout: 300_000, sequential: true }, () => {
-  // SBT-059: boss open ~ gemini triggers on-demand install
+  // SAND-109: boss open ~ gemini triggers on-demand install
   it('installs gemini on first boss open ~ gemini', async () => {
     const podman = await import('../../src/utils/podman.js');
 

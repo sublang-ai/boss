@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: Apache-2.0 -->
 <!-- SPDX-FileCopyrightText: 2026 SubLang International <https://sublang.ai> -->
 
-# SANDBOX: Sandbox Image Verification
+# SAND: Sandbox Image Verification
 
 ## Intent
 
@@ -10,13 +10,17 @@ sandbox image.
 
 ## Core Checks
 
-### SBT-001
+### SAND-51
+
+Verifies: [SAND-6](../dev/sandbox-image.md#sand-6)
 
 Where the image source exists, when a runtime builds
 `boss-sandbox:<tag>`, the build shall exit 0
 ([DR-001 §1](../../decisions/001-sandbox-architecture.md#1-oci-container-as-the-sandbox-boundary)).
 
-### SBT-002
+### SAND-52
+
+Verifies: [SAND-2](../dev/sandbox-image.md#sand-2), [SAND-37](../user/sandbox-image.md#sand-37)
 
 Where `boss-sandbox:<tag>` is built, when `claude --version` and
 `codex --help` run in the container, each command shall exit 0.
@@ -24,52 +28,68 @@ On-demand agents (`gemini`, `opencode`) are verified after
 first-use installation via `boss open`
 ([DR-001 Context](../../decisions/001-sandbox-architecture.md#context)).
 
-### SBT-003
+### SAND-53
+
+Verifies: [SAND-4](../dev/sandbox-image.md#sand-4)
 
 Where `boss-sandbox:<tag>` is built, when `cat /proc/1/comm`
 runs in the container, output shall be `tini`
 ([DR-001 §1](../../decisions/001-sandbox-architecture.md#1-oci-container-as-the-sandbox-boundary)).
 
-### SBT-004
+### SAND-54
+
+Verifies: [SAND-4](../dev/sandbox-image.md#sand-4), [SAND-38](../user/sandbox-image.md#sand-38)
 
 Where `boss-sandbox:<tag>` is built, when `id` runs in the
 container, output shall include `uid=1000(boss)` and
 `gid=1000(boss)`
 ([DR-001 §1](../../decisions/001-sandbox-architecture.md#1-oci-container-as-the-sandbox-boundary)).
 
-### SBT-012
+### SAND-55
+
+Verifies: [SAND-19](../dev/sandbox-image.md#sand-19)
 
 Where `boss-sandbox:<tag>` is built, when `tmux -V` runs in the
 container, the command shall exit 0 and print a tmux version
 ([DR-001 §2](../../decisions/001-sandbox-architecture.md#2-tmux-mapping)).
 
-### SBT-045
+### SAND-56
+
+Verifies: [SAND-4](../dev/sandbox-image.md#sand-4), [SAND-40](../user/sandbox-image.md#sand-40)
 
 Where `boss-sandbox:<tag>` is built, when `locale` runs in the
 container, `LANG` and `LC_ALL` shall both be `en_US.UTF-8`
-([SBD-004](../dev/sandbox-image.md#sbd-004)).
+([SAND-4](../dev/sandbox-image.md#sand-4)).
 
 ## Security and Defaults
 
-### SBT-005
+### SAND-57
+
+Verifies: [SAND-39](../user/sandbox-image.md#sand-39)
 
 Where `boss-sandbox:<tag>` runs read-only, when a process
 writes outside `/tmp` and `/home/boss`, the write shall fail
 ([DR-001 §1](../../decisions/001-sandbox-architecture.md#1-oci-container-as-the-sandbox-boundary)).
 
-### SBT-006
+### SAND-58
+
+Verifies: [SAND-39](../user/sandbox-image.md#sand-39)
 
 Where `boss-sandbox:<tag>` runs read-only with tmpfs `/tmp`,
 when a process writes inside `/tmp`, the write shall succeed
 ([DR-001 §1](../../decisions/001-sandbox-architecture.md#1-oci-container-as-the-sandbox-boundary)).
 
-### SBT-007
+### SAND-59
+
+Verifies: [SAND-5](../dev/sandbox-image.md#sand-5)
 
 Where `boss-sandbox:<tag>` is built, the SUID/SGID file count
 from `find / -perm /6000 -type f` shall be `0`
 ([DR-001 §1](../../decisions/001-sandbox-architecture.md#1-oci-container-as-the-sandbox-boundary)).
 
-### SBT-008
+### SAND-60
+
+Verifies: [SAND-5](../dev/sandbox-image.md#sand-5)
 
 Where `boss-sandbox:<tag>` is built, the following files shall
 exist:
@@ -87,7 +107,9 @@ exist:
 ([DR-001 §1](../../decisions/001-sandbox-architecture.md#1-oci-container-as-the-sandbox-boundary),
 [DR-001 §3](../../decisions/001-sandbox-architecture.md#3-authentication)).
 
-### SBT-009
+### SAND-61
+
+Verifies: [SAND-5](../dev/sandbox-image.md#sand-5), [SAND-42](../user/sandbox-image.md#sand-42)
 
 Where `boss-sandbox:<tag>` is built, the default Claude config
 shall include onboarding bypass and tool-permission settings
@@ -95,19 +117,25 @@ shall include onboarding bypass and tool-permission settings
 
 ## Script Checks
 
-### SBT-010
+### SAND-62
+
+Verifies: [SAND-6](../dev/sandbox-image.md#sand-6)
 
 Where `scripts/build-image.sh --help` is run, usage shall include
 `--tag`, `--multi-arch`, and `--push`.
 
-### SBT-011
+### SAND-63
+
+Verifies: [SAND-7](../dev/sandbox-image.md#sand-7)
 
 Where `scripts/build-image.sh --multi-arch` is run without
 `--push`, the script shall exit non-zero with a clear error.
 
 ## Image Size
 
-### SBT-013
+### SAND-64
+
+Verifies: [SAND-8](../dev/sandbox-image.md#sand-8)
 
 Where a multi-arch sandbox image is published to a registry, when
 compressed layer sizes are summed per platform from the registry
@@ -116,94 +144,120 @@ each be less than or equal to 700 MiB.
 
 ## Headless Authentication
 
-### SBT-014
+### SAND-65
+
+Verifies: [LCD-001](../dev/lifecycle.md#lcd-001)
 
 Where `boss init` creates `~/.boss/.env`, the template shall
 contain placeholders for `CLAUDE_CODE_OAUTH_TOKEN`,
 `ANTHROPIC_API_KEY`, `CODEX_API_KEY`, and `GEMINI_API_KEY`
 ([LCD-001](../dev/lifecycle.md#lcd-001)).
 
-### SBT-015
+### SAND-66
+
+Verifies: [SAND-43](../user/sandbox-image.md#sand-43), [LCD-002](../dev/lifecycle.md#lcd-002)
 
 Where `~/.boss/.env` defines `CLAUDE_CODE_OAUTH_TOKEN=<value>`,
 when the container starts, `printenv CLAUDE_CODE_OAUTH_TOKEN`
 inside the container shall equal `<value>`
-([SBX-006](../user/sandbox-image.md#sbx-006),
+([SAND-43](../user/sandbox-image.md#sand-43),
 [LCD-002](../dev/lifecycle.md#lcd-002)).
 
-### SBT-016
+### SAND-67
+
+Verifies: [SAND-9](../dev/sandbox-image.md#sand-9)
 
 Where the official sandbox image is running, `printenv NO_BROWSER`
 inside the container shall equal `true`
-([SBD-010](../dev/sandbox-image.md#sbd-010)).
+([SAND-9](../dev/sandbox-image.md#sand-9)).
 
-### SBT-017
+### SAND-68
+
+Verifies: [SAND-11](../dev/sandbox-image.md#sand-11)
 
 Where the supported host OpenCode credential file exists at start
 time, the container file
 `/home/boss/.local/share/opencode/auth.json` shall exist and be
 readable and writable by the runtime user
-([SBD-012](../dev/sandbox-image.md#sbd-012)).
+([SAND-11](../dev/sandbox-image.md#sand-11)).
 
-### SBT-018
+### SAND-69
+
+Verifies: [SAND-12](../dev/sandbox-image.md#sand-12)
 
 Where the supported host OpenCode credential file is absent at
 start time, container mount metadata shall not contain an OpenCode
 credential file mapping
-([SBD-013](../dev/sandbox-image.md#sbd-013)).
+([SAND-12](../dev/sandbox-image.md#sand-12)).
 
-### SBT-019
+### SAND-70
+
+Verifies: [SAND-45](../user/sandbox-image.md#sand-45)
 
 Where a user runs `codex login --device-auth` in a sandbox Codex
 session, the CLI shall print a device-auth URL and one-time code
-([SBX-008](../user/sandbox-image.md#sbx-008)).
+([SAND-45](../user/sandbox-image.md#sand-45)).
 
-### SBT-020
+### SAND-71
+
+Verifies: [SAND-46](../user/sandbox-image.md#sand-46)
 
 Where a user runs Gemini interactive auth in the sandbox with no
 cached credentials, the CLI shall print an auth URL and accept an
 authorization code pasted in the terminal
-([SBX-009](../user/sandbox-image.md#sbx-009)).
+([SAND-46](../user/sandbox-image.md#sand-46)).
 
-### SBT-021
+### SAND-72
+
+Verifies: [SAND-44](../user/sandbox-image.md#sand-44)
 
 Where `CLAUDE_CODE_OAUTH_TOKEN` is unset and
 `ANTHROPIC_API_KEY=<value>` is set in `~/.boss/.env`, a
 non-interactive Claude command in the container shall
 authenticate successfully
-([SBX-007](../user/sandbox-image.md#sbx-007)).
+([SAND-44](../user/sandbox-image.md#sand-44)).
 
-### SBT-022
+### SAND-73
+
+Verifies: [SAND-45](../user/sandbox-image.md#sand-45)
 
 Where `CODEX_API_KEY=<value>` is set in `~/.boss/.env`, a
 non-interactive `codex exec` command in the container shall
 authenticate successfully
-([SBX-008](../user/sandbox-image.md#sbx-008)).
+([SAND-45](../user/sandbox-image.md#sand-45)).
 
-### SBT-023
+### SAND-74
+
+Verifies: [SAND-46](../user/sandbox-image.md#sand-46)
 
 Where `GEMINI_API_KEY=<value>` is set in `~/.boss/.env`, a
 non-interactive Gemini command in the container shall
 authenticate successfully
-([SBX-009](../user/sandbox-image.md#sbx-009)).
+([SAND-46](../user/sandbox-image.md#sand-46)).
 
-### SBT-024
+### SAND-75
+
+Verifies: [SAND-47](../user/sandbox-image.md#sand-47)
 
 Where forwarded OpenCode credentials are absent and a supported
 provider API key is set in `~/.boss/.env`, OpenCode
 non-interactive commands in the container shall authenticate
 successfully
-([SBX-010](../user/sandbox-image.md#sbx-010)).
+([SAND-47](../user/sandbox-image.md#sand-47)).
 
 ## Autonomous Execution Validation
 
-### SBT-025
+### SAND-76
+
+Verifies: [SAND-42](../user/sandbox-image.md#sand-42)
 
 Where the autonomous execution fixture is created with a single
 deterministic known defect and a fixed oracle, when the oracle test
 is run before agent edits, the oracle shall fail.
 
-### SBT-026
+### SAND-77
+
+Verifies: [SAND-42](../user/sandbox-image.md#sand-42), [SAND-37](../user/sandbox-image.md#sand-37)
 
 Where autonomous execution validation runs for `claude` on a fresh
 isolated fixture workspace seeded from the fixture baseline, the
@@ -211,7 +265,9 @@ agent command shall exit successfully within a bounded run time,
 the oracle test shall pass after the run, and captured output shall
 contain no interactive permission approval prompt.
 
-### SBT-027
+### SAND-78
+
+Verifies: [SAND-42](../user/sandbox-image.md#sand-42), [SAND-37](../user/sandbox-image.md#sand-37)
 
 Where autonomous execution validation runs for `codex` on a fresh
 isolated fixture workspace seeded from the fixture baseline with
@@ -220,7 +276,9 @@ exit successfully within a bounded run time, the oracle test shall
 pass after the run, and captured output shall contain no
 interactive permission approval prompt.
 
-### SBT-028
+### SAND-79
+
+Verifies: [SAND-42](../user/sandbox-image.md#sand-42), [SAND-37](../user/sandbox-image.md#sand-37)
 
 Where autonomous execution validation runs for `gemini` on a fresh
 isolated fixture workspace seeded from the fixture baseline, the
@@ -228,7 +286,9 @@ agent command shall exit successfully within a bounded run time,
 the oracle test shall pass after the run, and captured output shall
 contain no interactive permission approval prompt.
 
-### SBT-029
+### SAND-80
+
+Verifies: [SAND-42](../user/sandbox-image.md#sand-42), [SAND-37](../user/sandbox-image.md#sand-37)
 
 Where autonomous execution validation runs for `opencode` on a
 fresh isolated fixture workspace seeded from the fixture baseline,
@@ -236,20 +296,26 @@ the agent command shall exit successfully within a bounded run
 time, the oracle test shall pass after the run, and captured output
 shall contain no interactive permission approval prompt.
 
-### SBT-030
+### SAND-81
+
+Verifies: [SAND-42](../user/sandbox-image.md#sand-42)
 
 Where autonomous execution diagnostics are emitted, diagnostic
 output shall not contain literal values of configured
 authentication secrets.
 
-### SBT-031
+### SAND-82
+
+Verifies: [SAND-42](../user/sandbox-image.md#sand-42)
 
 Where an agent completes an autonomous repair run on the fixture,
 fixture oracle definitions shall remain unchanged after the run,
 verifying the task contract preserves oracle definitions while
 repairing the known defect under test.
 
-### SBT-032
+### SAND-83
+
+Verifies: [SAND-42](../user/sandbox-image.md#sand-42)
 
 Where an autonomous agent run fails an autonomous success
 criterion, emitted failure diagnostics shall include the run exit
@@ -257,42 +323,54 @@ status and a bounded excerpt of captured run output.
 
 ## User-Local Tool Layer
 
-### SBT-033
+### SAND-84
+
+Verifies: [SAND-13](../dev/sandbox-image.md#sand-13)
 
 Where `boss-sandbox:<tag>` is built, `/home/boss/.local/bin`
 shall exist and be writable by the `boss` user
-([SBD-014](../dev/sandbox-image.md#sbd-014)).
+([SAND-13](../dev/sandbox-image.md#sand-13)).
 
-### SBT-034
+### SAND-85
+
+Verifies: [SAND-48](../user/sandbox-image.md#sand-48)
 
 Where a standalone binary is placed in `/home/boss/.local/bin`
 inside the container, the binary shall be executable by name
 without specifying its full path
-([SBX-011](../user/sandbox-image.md#sbx-011)).
+([SAND-48](../user/sandbox-image.md#sand-48)).
 
-### SBT-035
+### SAND-86
+
+Verifies: [SAND-14](../dev/sandbox-image.md#sand-14)
 
 Where `boss start` launches a container with a pre-existing
 `boss-data` volume that lacks `~/.local/bin`, after start
 completes, `/home/boss/.local/bin` shall exist and be writable
 by the `boss` user
-([SBD-015](../dev/sandbox-image.md#sbd-015)).
+([SAND-14](../dev/sandbox-image.md#sand-14)).
 
 ## Container Hardening
 
-### SBT-036
+### SAND-87
+
+Verifies: [LCD-004](../dev/lifecycle.md#lcd-004)
 
 Where `boss start` has launched the container, container inspection
 shall show all Linux capabilities dropped
 ([LCD-004](../dev/lifecycle.md#lcd-004)).
 
-### SBT-037
+### SAND-88
+
+Verifies: [LCD-004](../dev/lifecycle.md#lcd-004)
 
 Where `boss start` has launched the container, container security
 options shall include no-new-privileges
 ([LCD-004](../dev/lifecycle.md#lcd-004)).
 
-### SBT-038
+### SAND-89
+
+Verifies: [LCD-003](../dev/lifecycle.md#lcd-003)
 
 Where `boss init` runs on a non-rootless container runtime, the
 command shall exit non-zero and refuse to proceed
@@ -300,88 +378,112 @@ command shall exit non-zero and refuse to proceed
 
 ## Vulnerability Scanning
 
-### SBT-039
+### SAND-90
+
+Verifies: [SAND-17](../dev/sandbox-image.md#sand-17)
 
 Where the image is scanned with the accepted-CVE list applied as
 scanner exclusions, the scanner shall report zero CRITICAL or HIGH CVEs
-([SBD-018](../dev/sandbox-image.md#sbd-018)).
+([SAND-17](../dev/sandbox-image.md#sand-17)).
 
 ## Tmux Configuration
 
-### SBT-040
+### SAND-91
+
+Verifies: [SAND-19](../dev/sandbox-image.md#sand-19)
 
 Where `boss-sandbox:<tag>` is built, `/etc/tmux.conf` shall
 contain `set-clipboard on` and `allow-passthrough on`
-([SBD-020](../dev/sandbox-image.md#sbd-020)).
+([SAND-19](../dev/sandbox-image.md#sand-19)).
 
-### SBT-050
+### SAND-92
+
+Verifies: [SAND-20](../dev/sandbox-image.md#sand-20)
 
 Where `boss-sandbox:<tag>` is built, `/etc/tmux.conf` shall
 contain `set -g default-terminal "screen-256color"`
-([SBD-028](../dev/sandbox-image.md#sbd-028)).
+([SAND-20](../dev/sandbox-image.md#sand-20)).
 
-### SBT-041
+### SAND-93
+
+Verifies: [SAND-21](../dev/sandbox-image.md#sand-21)
 
 Where `boss-sandbox:<tag>` is built, the image-provided default
 `/home/boss/.tmux.conf` shall contain only comment lines and blank
 lines
-([SBD-021](../dev/sandbox-image.md#sbd-021)).
+([SAND-21](../dev/sandbox-image.md#sand-21)).
 
-### SBT-042
+### SAND-94
+
+Verifies: [SAND-22](../dev/sandbox-image.md#sand-22)
 
 Where `boss-sandbox:<tag>` is built, `/etc/tmux.conf` shall bind
 `MouseDragEnd1Pane` to `copy-selection-and-cancel` in both
 `copy-mode` and `copy-mode-vi`, and bind a prefix key to toggle
 mouse mode
-([SBD-022](../dev/sandbox-image.md#sbd-022)).
+([SAND-22](../dev/sandbox-image.md#sand-22)).
 
-### SBT-043
+### SAND-95
+
+Verifies: [SAND-23](../dev/sandbox-image.md#sand-23)
 
 Where `boss-sandbox:<tag>` is built, `/etc/tmux.conf` shall
 default mouse mode to off and restore the `mouse` preference
 from `~/.boss-prefs` on startup when the file exists
-([SBD-023](../dev/sandbox-image.md#sbd-023)).
+([SAND-23](../dev/sandbox-image.md#sand-23)).
 
-### SBT-044
+### SAND-96
+
+Verifies: [SAND-23](../dev/sandbox-image.md#sand-23)
 
 Where `boss-sandbox:<tag>` is built, when the mouse-toggle
 prefix-key binding fires, `/etc/tmux.conf` shall write the
 updated `mouse` value to `~/.boss-prefs` in `key=value` format
-([SBD-023](../dev/sandbox-image.md#sbd-023)).
+([SAND-23](../dev/sandbox-image.md#sand-23)).
 
 ## User-Space Tool Provisioning
 
-### SBT-046
+### SAND-97
+
+Verifies: [SAND-24](../dev/sandbox-image.md#sand-24)
 
 Where `boss-sandbox:<tag>` is built, `mise --version` in the
 container shall exit 0 and print the pinned version
-([SBD-024](../dev/sandbox-image.md#sbd-024)).
+([SAND-24](../dev/sandbox-image.md#sand-24)).
 
-### SBT-047
+### SAND-98
+
+Verifies: [SAND-25](../dev/sandbox-image.md#sand-25)
 
 Where `boss-sandbox:<tag>` is built, `/etc/mise/config.toml`
 shall declare `npm:@anthropic-ai/claude-code` and
 `github:openai/codex` (baseline agents only; on-demand agents
 are declared in `/etc/mise/ondemand.toml`)
-([SBD-025](../dev/sandbox-image.md#sbd-025)).
+([SAND-25](../dev/sandbox-image.md#sand-25)).
 
-### SBT-048
+### SAND-99
+
+Verifies: [SAND-26](../dev/sandbox-image.md#sand-26)
 
 Where `boss-sandbox:<tag>` is built, `/etc/mise/mise.lock`
 shall exist and contain version entries for all declared tools
-([SBD-026](../dev/sandbox-image.md#sbd-026)).
+([SAND-26](../dev/sandbox-image.md#sand-26)).
 
-### SBT-049
+### SAND-100
+
+Verifies: [SAND-27](../dev/sandbox-image.md#sand-27)
 
 Where `boss-sandbox:<tag>` is built, `claude --version` and
 `codex --help` shall each exit 0 via mise shims (baseline
 agents only; on-demand agents are verified after first-use
 installation via `boss open`)
-([SBD-027](../dev/sandbox-image.md#sbd-027)).
+([SAND-27](../dev/sandbox-image.md#sand-27)).
 
 ## DR-005 Package Manager Environment
 
-### SBT-051
+### SAND-101
+
+Verifies: [SAND-31](../dev/sandbox-image.md#sand-31)
 
 Where `boss-sandbox:<tag>` is built, container `ENV` shall set
 `XDG_CONFIG_HOME=/home/boss/.config`,
@@ -395,47 +497,59 @@ Where `boss-sandbox:<tag>` is built, container `ENV` shall set
 `GOBIN=/home/boss/.local/bin`,
 `CARGO_HOME=/home/boss/.local/share/cargo`, and
 `RUSTUP_HOME=/home/boss/.local/share/rustup`
-([SBD-029](../dev/sandbox-image.md#sbd-029)).
+([SAND-31](../dev/sandbox-image.md#sand-31)).
 
-### SBT-052
+### SAND-102
+
+Verifies: [SAND-13](../dev/sandbox-image.md#sand-13)
 
 Where `boss-sandbox:<tag>` is built, `PATH` shall start with
 `/home/boss/.local/share/mise/shims:/home/boss/.local/bin:/home/boss/.local/share/npm-global/bin:/home/boss/.local/share/cargo/bin:`
-([SBD-014](../dev/sandbox-image.md#sbd-014)).
+([SAND-13](../dev/sandbox-image.md#sand-13)).
 
-### SBT-053
+### SAND-103
+
+Verifies: [SAND-32](../dev/sandbox-image.md#sand-32)
 
 Where `boss-sandbox:<tag>` is built, `sudo -n <cmd>` inside the
 container shall execute `<cmd>` unprivileged and print the rootless
 context line; `sudo -u`, `sudo -g`, and `sudo -i` forms shall exit 1
 with informative errors
-([SBD-030](../dev/sandbox-image.md#sbd-030)).
+([SAND-32](../dev/sandbox-image.md#sand-32)).
 
-### SBT-054
+### SAND-104
+
+Verifies: [SAND-33](../dev/sandbox-image.md#sand-33)
 
 Where a container starts from `boss-sandbox:<tag>` with a writable
 home volume, startup shall seed missing files from `/opt/defaults/`
 into `$HOME` and shall not overwrite an already-existing target file
-([SBD-031](../dev/sandbox-image.md#sbd-031)).
+([SAND-33](../dev/sandbox-image.md#sand-33)).
 
-### SBT-055
+### SAND-105
+
+Verifies: [SAND-34](../dev/sandbox-image.md#sand-34)
 
 Where a container starts from `boss-sandbox:<tag>`, startup shall
 persist `BOSS_IMAGE_VERSION` in
 `$XDG_STATE_HOME/.boss-image-version`. Where the stored value differs
 from current `BOSS_IMAGE_VERSION`, startup logs shall include both
 previous and current values
-([SBD-032](../dev/sandbox-image.md#sbd-032)).
+([SAND-34](../dev/sandbox-image.md#sand-34)).
 
-### SBT-056
+### SAND-106
+
+Verifies: [SAND-35](../dev/sandbox-image.md#sand-35), [SAND-50](../user/sandbox-image.md#sand-50)
 
 Where `boss-sandbox:<tag>` is built, `gpg --version`,
 `tree --version`, `gh --version`, and `glab --version` in the
 container shall each exit 0
-([SBD-033](../dev/sandbox-image.md#sbd-033),
-[SBX-014](../user/sandbox-image.md#sbx-014)).
+([SAND-35](../dev/sandbox-image.md#sand-35),
+[SAND-50](../user/sandbox-image.md#sand-50)).
 
-### SBT-057
+### SAND-107
+
+Verifies: [SAND-31](../dev/sandbox-image.md#sand-31)
 
 Where interactive Bash loads the default `.bashrc` in the container,
 `PROMPT_COMMAND` shall include `_pip_user_venv_guard`; when
@@ -444,16 +558,20 @@ Where interactive Bash loads the default `.bashrc` in the container,
 restore `PIP_USER=1`
 ([DR-005 §1](../../decisions/005-package-manager-environment.md#1-xdg-environment-variables)).
 
-### SBT-058
+### SAND-108
+
+Verifies: [SAND-36](../dev/sandbox-image.md#sand-36)
 
 Where a container starts from `boss-sandbox:<tag>`, startup entrypoint
 shall write `$XDG_STATE_HOME/.boss-mise-reconcile.state` containing
 `status`, `fingerprint`, and `should_warn` fields
-([SBD-034](../dev/sandbox-image.md#sbd-034)).
+([SAND-36](../dev/sandbox-image.md#sand-36)).
 
-### SBT-059
+### SAND-109
+
+Verifies: [SAND-29](../dev/sandbox-image.md#sand-29)
 
 Where `boss open ~ gemini` is invoked against a running container
 without gemini pre-installed, the CLI shall install gemini from the
 on-demand config+lockfile and the agent binary shall be callable
-afterward ([SBD-036](../dev/sandbox-image.md#sbd-036)).
+afterward ([SAND-29](../dev/sandbox-image.md#sand-29)).
