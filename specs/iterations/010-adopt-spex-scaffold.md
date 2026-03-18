@@ -57,9 +57,9 @@ test traceability, and `map.md` organized by packages.
      (scaffold templates are copied to user projects and must not
      carry SPDX headers)
    - Carry forward STYLE-012 as LIC-3: source/spec files in this
-     repo shall use Apache-2.0 headers with the canonical copyright
-     line (the scaffold LIC items are license-agnostic; this repo
-     is not)
+     repo shall use `Apache-2.0` as the `SPDX-License-Identifier`
+     value (the scaffold LIC items are license-agnostic; this repo
+     is not; copyright text presence is covered by LIC-1/LIC-4)
    - Rename `items/test/spdx-headers.md` → `items/test/licensing.md`
    - Re-ID: SPDX-001 → LIC-4, SPDX-002 → LIC-5
    - Add `Verifies:` lines to LIC-4 and LIC-5

@@ -40,7 +40,9 @@ Where the file has comment syntax, is not excluded by [Exclusions](#exclusions),
 
 ### LIC-3
 
-Source code files (TypeScript, JavaScript, specs) shall use Apache-2.0 headers:
+Source code files (TypeScript, JavaScript, specs) shall use `Apache-2.0` as the `SPDX-License-Identifier` value.
+
+Example headers:
 
 ```typescript
 // SPDX-License-Identifier: Apache-2.0
