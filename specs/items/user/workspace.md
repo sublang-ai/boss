@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: Apache-2.0 -->
 <!-- SPDX-FileCopyrightText: 2026 SubLang International <https://sublang.ai> -->
 
-# WORKSPACE: User-Facing Workspace Behavior
+# WS: User-Facing Workspace Behavior
 
 ## Intent
 
@@ -10,7 +10,7 @@ commands.
 
 ## Opening Sessions
 
-### WSX-001
+### WS-8
 
 Where a user runs `boss open [workspace] [command] [-- <args>]`,
 the CLI shall create or attach to a workspace session in the
@@ -26,7 +26,7 @@ follow ([DR-002 §4](../../decisions/002-iteron-cli-commands.md#4-boss-open-work
 - 2 args where second token is not a built-in agent: treated as raw command
 - Arguments after the first `--` are forwarded to the resolved command
 
-### WSX-002
+### WS-9
 
 Where a user runs `boss open <workspace> <agent>` and then
 detaches (Ctrl-B D), when the user runs the same command again,
@@ -36,7 +36,7 @@ a duplicate
 
 ## Listing Sessions
 
-### WSX-003
+### WS-10
 
 Where a user runs `boss ls`, the CLI shall display a tree
 view grouping running sessions by workspace, showing command
@@ -45,7 +45,7 @@ name, attached/detached status, and uptime for each session
 
 ## Removing Workspaces
 
-### WSX-004
+### WS-11
 
 Where a user runs `boss rm <workspace>`, the CLI shall kill
 all sessions in that workspace and remove the workspace
@@ -56,7 +56,7 @@ exit non-zero when workspace argument is missing
 
 ## Error Handling
 
-### WSX-005
+### WS-12
 
 Where the sandbox container is not running, when a user runs
 `boss ls` or `boss rm`, the CLI shall exit non-zero with a

@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: Apache-2.0 -->
 <!-- SPDX-FileCopyrightText: 2026 SubLang International <https://sublang.ai> -->
 
-# WORKSPACE: Workspace Interaction Verification
+# WS: Workspace Interaction Verification
 
 ## Intent
 
@@ -10,93 +10,117 @@ requirements.
 
 ## Session Identity
 
-### WST-001
+### WS-13
+
+Verifies: [WS-1](../dev/workspace.md#ws-1)
 
 Where a session is created for command `bash` in home, the
 session identity shall be `bash@~`
-([WSD-001](../dev/workspace.md#wsd-001)).
+([WS-1](../dev/workspace.md#ws-1)).
 
-### WST-002
+### WS-14
+
+Verifies: [WS-2](../dev/workspace.md#ws-2)
 
 Where a session identity contains multiple `@`, parsing shall
 use the last delimiter. Where no valid delimiter exists,
 parsing shall fall back to location `~`
-([WSD-002](../dev/workspace.md#wsd-002)).
+([WS-2](../dev/workspace.md#ws-2)).
 
-### WST-003
+### WS-15
+
+Verifies: [WS-3](../dev/workspace.md#ws-3)
 
 Where an agent, command, or workspace token contains `@`, it
 shall be rejected
-([WSD-003](../dev/workspace.md#wsd-003)).
+([WS-3](../dev/workspace.md#ws-3)).
 
 ## Input Constraints
 
-### WST-004
+### WS-16
+
+Verifies: [WS-4](../dev/workspace.md#ws-4)
 
 Where a workspace input is `.`, `..`, absolute, or contains
 `/`, `\`, or `@`, it shall be rejected
-([WSD-004](../dev/workspace.md#wsd-004)).
+([WS-4](../dev/workspace.md#ws-4)).
 
-### WST-005
+### WS-17
+
+Verifies: [WS-3](../dev/workspace.md#ws-3)
 
 Where config defines an agent name containing `@`, config load
 shall fail
-([WSD-003](../dev/workspace.md#wsd-003)).
+([WS-3](../dev/workspace.md#ws-3)).
 
 ## Argument Resolution
 
-### WST-006
+### WS-18
+
+Verifies: [WS-8](../user/workspace.md#ws-8)
 
 Where `boss open` is invoked with 0, 1, or 2 positional
 arguments (including workspace `~`), resolved binary,
 session identity, and working directory shall match
 spec-defined branches
-([WSX-001](../user/workspace.md#wsx-001)).
+([WS-8](../user/workspace.md#ws-8)).
 
 ## Open Command
 
-### WST-007
+### WS-19
+
+Verifies: [WS-9](../user/workspace.md#ws-9)
 
 Where `boss open` is run twice with the same
 `<agent,workspace>`, the second run shall reattach and no
 duplicate session shall be created
-([WSX-002](../user/workspace.md#wsx-002)).
+([WS-9](../user/workspace.md#ws-9)).
 
-### WST-008
+### WS-20
+
+Verifies: [WS-8](../user/workspace.md#ws-8)
 
 Where sessions are opened in two distinct workspaces, both
 sessions shall coexist
-([WSX-001](../user/workspace.md#wsx-001)).
+([WS-8](../user/workspace.md#ws-8)).
 
 ## Ls Command
 
-### WST-009
+### WS-21
+
+Verifies: [WS-7](../dev/workspace.md#ws-7)
 
 Where home and workspace sessions exist, `boss ls` tree
 output shall include `~/ (home)` plus workspace nodes in
 required ordering
-([WSD-007](../dev/workspace.md#wsd-007)).
+([WS-7](../dev/workspace.md#ws-7)).
 
 ## Rm Command
 
-### WST-010
+### WS-22
+
+Verifies: [WS-11](../user/workspace.md#ws-11)
 
 Where `boss rm` is called with `~` or without a workspace,
 it shall exit non-zero
-([WSX-004](../user/workspace.md#wsx-004)).
+([WS-11](../user/workspace.md#ws-11)).
 
-### WST-011
+### WS-23
+
+Verifies: [WS-11](../user/workspace.md#ws-11)
 
 Where sessions exist in a workspace, `boss rm <workspace>`
 shall remove the workspace and terminate its sessions after
 confirmation
-([WSX-004](../user/workspace.md#wsx-004)).
+([WS-11](../user/workspace.md#ws-11)).
 
 ## Container State
 
-### WST-012
+### WS-24
+
+Verifies: [WS-12](../user/workspace.md#ws-12)
 
 Where the container is not running, `boss ls` and `boss rm`
 shall exit non-zero with a "not running" message.  `boss open`
 shall auto-start the container before opening the session
-([WSX-005](../user/workspace.md#wsx-005)).
+([WS-12](../user/workspace.md#ws-12)).

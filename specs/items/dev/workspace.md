@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: Apache-2.0 -->
 <!-- SPDX-FileCopyrightText: 2026 SubLang International <https://sublang.ai> -->
 
-# WORKSPACE: Workspace Interaction Requirements
+# WS: Workspace Interaction Requirements
 
 ## Intent
 
@@ -10,14 +10,14 @@ commands (`open`, `ls`, `rm`) and session identity.
 
 ## Session Identity
 
-### WSD-001
+### WS-1
 
 Where a workspace session is represented, its identity shall be
 `<command>@<location>` across create/list/remove
 flows
 ([DR-002 Workspace Model](../../decisions/002-iteron-cli-commands.md#workspace-model)).
 
-### WSD-002
+### WS-2
 
 Where a session identity is parsed from tmux output, including
 non-Boss or legacy names, the rightmost `@` shall define the
@@ -26,13 +26,13 @@ name shall be treated as command and location shall default to `~`.
 
 ## Input Constraints
 
-### WSD-003
+### WS-3
 
 Where agent names, command names, or workspace names are used in
 session identity, each shall reject the reserved delimiter `@`
 ([DR-002 §4](../../decisions/002-iteron-cli-commands.md#4-boss-open-workspace-command----args)).
 
-### WSD-004
+### WS-4
 
 Where a workspace name is accepted from user input, it shall reject
 absolute paths, path separators (`/`, `\`), and traversal segments
@@ -40,24 +40,24 @@ absolute paths, path separators (`/`, `\`), and traversal segments
 
 ## Open Behavior
 
-### WSD-005
+### WS-5
 
 Where `boss open` targets a non-home workspace and that directory
 is absent, the CLI shall create it before launching the session.
 
 ## Ls Behavior
 
-### WSD-006
+### WS-6
 
 Where `boss ls` returns running sessions, including non-Boss or
 legacy names, it shall tolerate malformed session metadata by ignoring
 invalid rows rather than failing the command
 ([DR-002 §5](../../decisions/002-iteron-cli-commands.md#5-boss-ls)).
 
-### WSD-007
+### WS-7
 
 Where `boss ls` formats output, it shall include both active sessions
 and discovered workspace directories, including workspaces with no
 active sessions. Tree view shall list `~/ (home)` first, then
 workspaces alphabetically
-([WSX-003](../user/workspace.md#wsx-003)).
+([WS-10](../user/workspace.md#ws-10)).
