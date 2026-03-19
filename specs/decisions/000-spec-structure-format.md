@@ -103,10 +103,9 @@ IRs may be temporary and must not be cited by DRs or items.
 
 ### Transition
 
-The existing spec corpus does not yet fully conform to this DR.
-Known gaps — `spec-map.md` rename to `map.md`, creation of root
-`meta.md`, IR section headings, item `## Intent` sections, and test
-`Verifies:` metadata — are tracked and resolved by
+The gaps previously tracked here — `spec-map.md` rename, root
+`meta.md`, IR section headings, item `## Intent` sections, and
+test `Verifies:` metadata — have been resolved by
 [IR-010](../iterations/010-adopt-spex-scaffold.md).
 
 ## References

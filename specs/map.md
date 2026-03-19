@@ -3,18 +3,20 @@
 
 # Spec Map
 
-Quick-reference guide for AI agents to locate the right spec file.
-Spec files are source of truth.
+Quick-reference index for locating spec files.
+Spec items are the source of truth.
 
 ## Layout
 
 ```text
-decisions/   Architectural decision records (DR-NNN)
-iterations/  Iteration records (IR-NNN)
-items/       Spec item files
-    user/        User-facing behavior
-    dev/         Implementation requirements
-    test/        Verification criteria
+decisions/  Decision records (DRs)
+iterations/ Iteration records (IRs)
+items/      Spec item files
+    user/       User-visible behavior
+    dev/        Implementation requirements
+    test/       Acceptance testing
+map.md      This index
+meta.md     The spec of specs
 ```
 
 Specs use GEARS syntax ([META-6](meta.md#meta-6)).
@@ -47,31 +49,51 @@ Authoring rules: [meta.md](meta.md).
 | IR-009 | [009-dr005-rollout-and-dev-cli-baseline.md](iterations/009-dr005-rollout-and-dev-cli-baseline.md) | DR-005 rollout and baseline developer CLIs |
 | IR-010 | [010-adopt-spex-scaffold.md](iterations/010-adopt-spex-scaffold.md) | Adopt spex scaffold framework |
 
-## Spec Files
+## Packages
 
-### `items/dev/`
+### DOC
 
-| File | Summary |
-| --- | --- |
-| [git.md](items/dev/git.md) | Commit message format and AI co-authorship trailers |
-| [docs.md](items/dev/docs.md) | User documentation coverage: install, CLI reference, agents, workspaces, tmux, troubleshooting |
-| [lifecycle.md](items/dev/lifecycle.md) | Rootless enforcement, container hardening, env template, env exposure |
-| [release.md](items/dev/release.md) | Semantic versioning, changelog, npm publish with provenance |
-| [sandbox-image.md](items/dev/sandbox-image.md) | Dockerfile, agent installs, runtime defaults, security hardening, image size budget, headless auth config, vulnerability scanning |
-| [licensing.md](items/dev/licensing.md) | SPDX header requirements and file-scope rules |
-| [workspace.md](items/dev/workspace.md) | Session identity format, input constraints, open/ls/rm behavior |
+| Group | File | Summary |
+| --- | --- | --- |
+| dev | [docs.md](items/dev/docs.md) | User documentation coverage: install, CLI reference, agents, workspaces, tmux, troubleshooting |
 
-### `items/user/`
+### GIT
 
-| File | Summary |
-| --- | --- |
-| [sandbox-image.md](items/user/sandbox-image.md) | Agent availability, runtime behavior, headless auth per agent |
-| [workspace.md](items/user/workspace.md) | Argument resolution, session reattach, ls tree view, rm, error handling |
+| Group | File | Summary |
+| --- | --- | --- |
+| dev | [git.md](items/dev/git.md) | Commit message format and AI co-authorship trailers |
 
-### `items/test/`
+### LCD
 
-| File | Summary |
-| --- | --- |
-| [licensing.md](items/test/licensing.md) | Copyright and license header presence checks |
-| [sandbox-image.md](items/test/sandbox-image.md) | Build, security, config, script, image size, auth, autonomous execution, container hardening, and vulnerability scanning checks |
-| [workspace.md](items/test/workspace.md) | Session identity, input constraints, open/ls/rm, container-down handling |
+| Group | File | Summary |
+| --- | --- | --- |
+| dev | [lifecycle.md](items/dev/lifecycle.md) | Rootless enforcement, container hardening, env template, env exposure, SSH auth, tool provisioning |
+
+### LIC
+
+| Group | File | Summary |
+| --- | --- | --- |
+| dev | [licensing.md](items/dev/licensing.md) | SPDX header requirements and file-scope rules |
+| test | [licensing.md](items/test/licensing.md) | Copyright and license header presence checks |
+
+### RELEASE
+
+| Group | File | Summary |
+| --- | --- | --- |
+| dev | [release.md](items/dev/release.md) | Semantic versioning, changelog, npm publish with provenance |
+
+### SAND
+
+| Group | File | Summary |
+| --- | --- | --- |
+| dev | [sandbox-image.md](items/dev/sandbox-image.md) | Dockerfile, agent installs, runtime defaults, security hardening, image size budget, headless auth config, vulnerability scanning |
+| user | [sandbox-image.md](items/user/sandbox-image.md) | Agent availability, runtime behavior, headless auth per agent |
+| test | [sandbox-image.md](items/test/sandbox-image.md) | Build, security, config, script, image size, auth, autonomous execution, container hardening, and vulnerability scanning checks |
+
+### WS
+
+| Group | File | Summary |
+| --- | --- | --- |
+| dev | [workspace.md](items/dev/workspace.md) | Session identity format, input constraints, open/ls/rm behavior |
+| user | [workspace.md](items/user/workspace.md) | Argument resolution, session reattach, ls tree view, rm, error handling |
+| test | [workspace.md](items/test/workspace.md) | Session identity, input constraints, open/ls/rm, container-down handling |

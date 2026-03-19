@@ -137,11 +137,10 @@ The `Verifies:` line shall contain one or more comma-separated [citations](#meta
 
 ## Transition
 
-The existing spec corpus does not yet fully conform to all META
-items. Known gaps — `spec-map.md` rename to `map.md` ([META-1](#meta-1)),
-IR `## Acceptance criteria` headings ([META-5](#meta-5)), unified
-package prefixes ([META-11](#meta-11)), and test `Verifies:` metadata
-([META-19](#meta-19)) — are tracked and resolved by
+The gaps previously tracked here — `spec-map.md` rename
+([META-1](#meta-1)), IR headings ([META-5](#meta-5)), unified
+package prefixes ([META-11](#meta-11)), and test `Verifies:`
+metadata ([META-19](#meta-19)) — have been resolved by
 [IR-010](iterations/010-adopt-spex-scaffold.md).
 
 ## References

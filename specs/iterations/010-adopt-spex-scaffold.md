@@ -18,9 +18,9 @@ test traceability, and `map.md` organized by packages.
 - [x] Each spec package uses one prefix across all item groups
 - [x] Item IDs use `<PACK>-<N>` format (no zero-padding)
 - [x] All test items have `Verifies:` metadata lines
-- [ ] `map.md` replaces `spec-map.md`, organized by packages
-- [ ] `CLAUDE.md` and `AGENTS.md` updated to reference `specs/map.md`
-- [ ] Existing IRs use `## Acceptance criteria` and have valid paths
+- [x] `map.md` replaces `spec-map.md`, organized by packages
+- [x] `CLAUDE.md` and `AGENTS.md` updated to reference `specs/map.md`
+- [x] Existing IRs use `## Acceptance criteria` and have valid paths
 
 ## Tasks
 
