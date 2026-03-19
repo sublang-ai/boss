@@ -261,6 +261,7 @@ describe('DR-003 SSH key mount (integration)', { timeout: 360_000, sequential: t
     if (sshKeyDir) await rm(sshKeyDir, { recursive: true, force: true });
   }, 120_000);
 
+  // LCD-56: SSH keyfile injection and IdentityFile directives on ephemeral tmpfs
   it('mounts SSH key and writes ssh config when mode=keyfile', async () => {
     const keyPath = join(sshKeyDir, 'id_ed25519');
     const configToml = `[container]
@@ -298,6 +299,7 @@ keyfiles = ["${keyPath}"]
     expect(perms).toBe('600');
   });
 
+  // LCD-56: ephemeral tmpfs for key storage
   it('SSH key tmpfs visible in podman inspect', () => {
     const tmpfs = podmanExecSync(['inspect', SSH_TEST_CONTAINER, '--format', '{{json .HostConfig.Tmpfs}}']);
     expect(tmpfs).toContain('/run/boss/ssh');
@@ -308,7 +310,7 @@ keyfiles = ["${keyPath}"]
     await stopCommand();
   });
 
-  // Regression test for keyfile → off transition (self-contained)
+  // LCD-57: managed SSH config removed when auth is off
   it('cleans stale SSH config when switching from keyfile to off', async () => {
     const keyPath = join(sshKeyDir, 'id_ed25519');
 
@@ -368,6 +370,7 @@ mode = "off"
     await stopCommand();
   });
 
+  // LCD-57: no SSH config when mode=off
   it('skips SSH mount when mode=off', async () => {
     const configToml = `[container]
 name = "${SSH_TEST_CONTAINER}"
@@ -395,6 +398,7 @@ mode = "off"
     await stopCommand();
   });
 
+  // LCD-57: no SSH config when [auth.ssh] unconfigured
   it('skips SSH mount when [auth.ssh] absent', async () => {
     const configToml = `[container]
 name = "${SSH_TEST_CONTAINER}"
@@ -448,7 +452,7 @@ keyfiles = ["/nonexistent/path/id_ed25519"]
     await stopCommand();
   });
 
-  // Multi-key injection test
+  // LCD-56: multi-key injection preserving declared order
   it('mounts multiple SSH keys and writes all IdentityFile directives', async () => {
     const keyPath1 = join(sshKeyDir, 'id_ed25519');
     // Create a second key
@@ -577,7 +581,7 @@ keyfiles = ["${keyPath}", "/nonexistent/path/id_missing"]
     await stopCommand();
   });
 
-  // Pre-seeded SSH config tests
+  // LCD-58: known_hosts pre-seeded with GitHub and GitLab host keys
   it('has pre-seeded ssh_known_hosts with GitHub and GitLab keys', async () => {
     const configToml = `[container]
 name = "${SSH_TEST_CONTAINER}"
@@ -595,6 +599,7 @@ volume = "${SSH_TEST_VOLUME}"
     expect(knownHosts).toContain('gitlab.com');
   });
 
+  // LCD-58: StrictHostKeyChecking yes enforced via ssh_config.d
   it('has StrictHostKeyChecking and managed Include in ssh_config.d', () => {
     const sshConf = podmanExecSync(['exec', SSH_TEST_CONTAINER, 'cat', '/etc/ssh/ssh_config.d/boss.conf']);
     expect(sshConf).toContain('StrictHostKeyChecking yes');

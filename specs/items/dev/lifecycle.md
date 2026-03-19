@@ -62,8 +62,10 @@ persisting on the volume
 ### LCD-6
 
 The sandbox image shall pre-seed `/etc/ssh/ssh_known_hosts` with
-GitHub and GitLab.com host keys and enforce `StrictHostKeyChecking yes`
-via `/etc/ssh/ssh_config.d/boss.conf`
+GitHub and GitLab.com host keys, enforce `StrictHostKeyChecking yes`,
+and include `Include /home/boss/.ssh/config.d/*.conf` so that
+managed per-user config from [LCD-5](#lcd-5) participates in SSH
+resolution — all via `/etc/ssh/ssh_config.d/boss.conf`
 ([DR-003 §2](../../decisions/003-runtime-profiled-auth.md#2-local-profile)).
 
 ## Tool Provisioning

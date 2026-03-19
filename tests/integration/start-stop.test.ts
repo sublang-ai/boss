@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 // SPDX-FileCopyrightText: 2026 SubLang International <https://sublang.ai>
 
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
 import { mkdtempSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
@@ -299,6 +299,46 @@ describe('boss start/stop (integration)', { timeout: 360_000, sequential: true }
     expect(Number.isFinite(updated)).toBe(true);
     // Ensure this was produced by a recent boot path, not stale prior-run state.
     expect(updated).toBeGreaterThan(nowEpoch - 300);
+  });
+
+  // LCD-59: boss start surfaces mise reconciliation warning when should_warn=1
+  it('surfaces mise reconciliation warning when user tools lack lockfile', async () => {
+    // Write a user config that declares tools but has no lockfile.
+    // This triggers the user_lock_missing hint with should_warn=1.
+    execFileSync('podman', ['exec', TEST_CONTAINER, 'sh', '-c',
+      'mkdir -p ~/.config/mise && printf \'[tools]\\njq = "latest"\\n\' > ~/.config/mise/config.toml',
+    ], { stdio: 'ignore' });
+    execFileSync('podman', ['exec', TEST_CONTAINER, 'rm', '-f',
+      '/home/boss/.config/mise/mise.lock',
+    ], { stdio: 'ignore' });
+    // Clear prior state so dedupe does not suppress the warning.
+    execFileSync('podman', ['exec', TEST_CONTAINER, 'rm', '-f',
+      '/home/boss/.local/state/.boss-mise-reconcile.state',
+    ], { stdio: 'ignore' });
+
+    const { stopCommand } = await import('../../src/commands/stop.js');
+    await stopCommand();
+
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    try {
+      const { startCommand } = await import('../../src/commands/start.js');
+      await startCommand();
+
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('mise reconciliation hint'),
+      );
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('user_lock_missing'),
+      );
+    } finally {
+      warnSpy.mockRestore();
+      // Clean up: remove the user config so subsequent tests are unaffected.
+      try {
+        execFileSync('podman', ['exec', TEST_CONTAINER, 'sh', '-c',
+          'rm -f ~/.config/mise/config.toml && : > ~/.config/mise/config.toml',
+        ], { stdio: 'ignore' });
+      } catch { /* container may not be running */ }
+    }
   });
 
   it('loads DR-005 interactive venv guard in bash and restores PIP_USER on venv exit', () => {

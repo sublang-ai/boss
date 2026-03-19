@@ -85,7 +85,8 @@ Verifies: [LCD-6](../dev/lifecycle.md#lcd-6)
 Where `boss-sandbox:<tag>` is built, `/etc/ssh/ssh_known_hosts`
 shall contain host keys for `github.com` and `gitlab.com`, and
 `/etc/ssh/ssh_config.d/boss.conf` shall include
-`StrictHostKeyChecking yes`
+`StrictHostKeyChecking yes` and
+`Include /home/boss/.ssh/config.d/*.conf`
 ([LCD-6](../dev/lifecycle.md#lcd-6)).
 
 ## Tool Provisioning
