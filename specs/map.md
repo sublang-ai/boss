@@ -68,6 +68,7 @@ Authoring rules: [meta.md](meta.md).
 | Group | File | Summary |
 | --- | --- | --- |
 | dev | [lifecycle.md](items/dev/lifecycle.md) | Rootless enforcement, container hardening, env template, env exposure, SSH auth, tool provisioning |
+| test | [lifecycle.md](items/test/lifecycle.md) | Initialization, container hardening, headless authentication checks |
 
 ### LIC
 

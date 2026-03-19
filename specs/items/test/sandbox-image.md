@@ -144,25 +144,6 @@ each be less than or equal to 700 MiB.
 
 ## Headless Authentication
 
-### SAND-65
-
-Verifies: [LCD-1](../dev/lifecycle.md#lcd-1)
-
-Where `boss init` creates `~/.boss/.env`, the template shall
-contain placeholders for `CLAUDE_CODE_OAUTH_TOKEN`,
-`ANTHROPIC_API_KEY`, `CODEX_API_KEY`, and `GEMINI_API_KEY`
-([LCD-1](../dev/lifecycle.md#lcd-1)).
-
-### SAND-66
-
-Verifies: [SAND-43](../user/sandbox-image.md#sand-43), [LCD-2](../dev/lifecycle.md#lcd-2)
-
-Where `~/.boss/.env` defines `CLAUDE_CODE_OAUTH_TOKEN=<value>`,
-when the container starts, `printenv CLAUDE_CODE_OAUTH_TOKEN`
-inside the container shall equal `<value>`
-([SAND-43](../user/sandbox-image.md#sand-43),
-[LCD-2](../dev/lifecycle.md#lcd-2)).
-
 ### SAND-67
 
 Verifies: [SAND-9](../dev/sandbox-image.md#sand-9)
@@ -349,32 +330,6 @@ Where `boss start` launches a container with a pre-existing
 completes, `/home/boss/.local/bin` shall exist and be writable
 by the `boss` user
 ([SAND-14](../dev/sandbox-image.md#sand-14)).
-
-## Container Hardening
-
-### SAND-87
-
-Verifies: [LCD-4](../dev/lifecycle.md#lcd-4)
-
-Where `boss start` has launched the container, container inspection
-shall show all Linux capabilities dropped
-([LCD-4](../dev/lifecycle.md#lcd-4)).
-
-### SAND-88
-
-Verifies: [LCD-4](../dev/lifecycle.md#lcd-4)
-
-Where `boss start` has launched the container, container security
-options shall include no-new-privileges
-([LCD-4](../dev/lifecycle.md#lcd-4)).
-
-### SAND-89
-
-Verifies: [LCD-3](../dev/lifecycle.md#lcd-3)
-
-Where `boss init` runs on a non-rootless container runtime, the
-command shall exit non-zero and refuse to proceed
-([LCD-3](../dev/lifecycle.md#lcd-3)).
 
 ## Vulnerability Scanning
 
