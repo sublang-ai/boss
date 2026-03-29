@@ -115,6 +115,17 @@ Where `boss-sandbox:<tag>` is built, the default Claude config
 shall include onboarding bypass and tool-permission settings
 ([DR-001 §3](../../decisions/001-sandbox-architecture.md#3-authentication)).
 
+### SAND-112
+
+Verifies: [SAND-111](../dev/sandbox-image.md#sand-111)
+
+Where `boss-sandbox:<tag>` is built, `/etc/ssh/ssh_known_hosts`
+shall contain host keys for `github.com` and `gitlab.com`, and
+`/etc/ssh/ssh_config.d/boss.conf` shall include
+`StrictHostKeyChecking yes` and
+`Include /home/boss/.ssh/config.d/*.conf`
+([SAND-111](../dev/sandbox-image.md#sand-111)).
+
 ## Script Checks
 
 ### SAND-62
