@@ -18,7 +18,7 @@ by cross-cutting audit of `specs/items/`, CLI source, and `docs/`.
 - [x] LCD-55 non-rootless failure path has an integration test
 - [x] SAND-8 / SAND-64 (image-size gate) removal is clean
 - [x] `boss scaffold` has a spec package
-- [ ] DR-002 acknowledges `scaffold` as the seventh command
+- [x] DR-002 acknowledges `scaffold` as the seventh command
 - [ ] LCD-6 moved to SAND to resolve META-13 package-boundary violation
 
 ## Tasks
