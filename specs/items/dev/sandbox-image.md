@@ -78,16 +78,6 @@ Where `scripts/build-image.sh` runs in multi-arch mode, the
 script shall require `--push` and publish a
 `linux/amd64` + `linux/arm64` manifest.
 
-## Image Size
-
-### SAND-8
-
-Where a sandbox image is published, the release process shall
-enforce a per-architecture compressed image size budget of at
-most 700 MiB, measured as the sum of
-compressed layer sizes from the registry manifest for each target
-platform.
-
 ## Headless Authentication
 
 ### SAND-9

@@ -48,6 +48,7 @@ Authoring rules: [meta.md](meta.md).
 | IR-008 | [008-user-tool-provisioning.md](iterations/008-user-tool-provisioning.md) | User-space tool provisioning via mise |
 | IR-009 | [009-dr005-rollout-and-dev-cli-baseline.md](iterations/009-dr005-rollout-and-dev-cli-baseline.md) | DR-005 rollout and baseline developer CLIs |
 | IR-010 | [010-adopt-spex-scaffold.md](iterations/010-adopt-spex-scaffold.md) | Adopt spex scaffold framework |
+| IR-011 | [011-spec-codebase-alignment.md](iterations/011-spec-codebase-alignment.md) | Spec–codebase alignment: LCD user items, doc fixes, test gaps |
 
 ## Packages
 
@@ -87,9 +88,9 @@ Authoring rules: [meta.md](meta.md).
 
 | Group | File | Summary |
 | --- | --- | --- |
-| dev | [sandbox-image.md](items/dev/sandbox-image.md) | Dockerfile, agent installs, runtime defaults, security hardening, image size budget, headless auth config, vulnerability scanning |
+| dev | [sandbox-image.md](items/dev/sandbox-image.md) | Dockerfile, agent installs, runtime defaults, security hardening, headless auth config, vulnerability scanning |
 | user | [sandbox-image.md](items/user/sandbox-image.md) | Agent availability, runtime behavior, headless auth per agent |
-| test | [sandbox-image.md](items/test/sandbox-image.md) | Build, security, config, script, image size, auth, autonomous execution, container hardening, and vulnerability scanning checks |
+| test | [sandbox-image.md](items/test/sandbox-image.md) | Build, security, config, script, auth, autonomous execution, container hardening, and vulnerability scanning checks |
 
 ### WS
 

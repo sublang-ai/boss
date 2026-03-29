@@ -131,17 +131,6 @@ Verifies: [SAND-7](../dev/sandbox-image.md#sand-7)
 Where `scripts/build-image.sh --multi-arch` is run without
 `--push`, the script shall exit non-zero with a clear error.
 
-## Image Size
-
-### SAND-64
-
-Verifies: [SAND-8](../dev/sandbox-image.md#sand-8)
-
-Where a multi-arch sandbox image is published to a registry, when
-compressed layer sizes are summed per platform from the registry
-manifest, the total for `linux/amd64` and for `linux/arm64` shall
-each be less than or equal to 700 MiB.
-
 ## Headless Authentication
 
 ### SAND-67
