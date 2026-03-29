@@ -41,10 +41,12 @@ unmodified.
 
 ### SCAF-5
 
-Where a user runs `boss scaffold`, the CLI shall append agent spec
-instructions to `CLAUDE.md` and `AGENTS.md`. When neither file
-exists, the CLI shall create both. When the instructions are
-already present, the CLI shall skip appending.
+Where a user runs `boss scaffold`, the CLI shall update agent spec
+instructions in `CLAUDE.md` and `AGENTS.md`. When neither file
+exists, the CLI shall create both; when only one exists, only that
+file shall be updated. When a file contains a matching specs
+section heading, the CLI shall replace that section in place; when
+the replacement is identical, the CLI shall skip the file.
 
 ## Error Handling
 

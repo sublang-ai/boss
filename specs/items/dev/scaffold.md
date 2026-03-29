@@ -37,7 +37,12 @@ root and return the `scaffold/` directory path.
 ### SCAF-10
 
 Where `appendAgentSpecs()` is called, it shall read
-`scaffold/agent-specs.txt` and append its content to `CLAUDE.md`
-and `AGENTS.md` at the base path. When neither file exists, both
-shall be created. When a file already contains the specs section
-heading, the existing section shall be replaced in place.
+`scaffold/agent-specs.txt` and process `CLAUDE.md` and `AGENTS.md`
+at the base path. When neither file exists, both shall be created;
+when only one exists, only that file shall be updated. Detection of
+an existing specs section shall use
+a case-sensitive match on the heading `## Specs (Source of Truth)`;
+when found, the section shall be replaced in place and reported as
+updated, or skipped when the replacement is identical. When the
+heading is absent (including case mismatches), the content shall be
+appended to the file.
