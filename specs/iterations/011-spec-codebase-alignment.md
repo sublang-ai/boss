@@ -14,7 +14,7 @@ by cross-cutting audit of `specs/items/`, CLI source, and `docs/`.
       and `stop` user-visible behavior
 - [x] `docs/cli-reference.md` exit-code tables match specs and code
 - [x] `docs/install.md` reflects current version and `init` behavior
-- [ ] `boss rm` abort exit-code behavior is canonicalized
+- [x] `boss rm` abort exit-code behavior is canonicalized
 - [ ] LCD-55 non-rootless failure path has an integration test
 - [x] SAND-8 / SAND-64 (image-size gate) removal is clean
 - [ ] `boss scaffold` has a spec package

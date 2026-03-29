@@ -50,8 +50,9 @@ name, attached/detached status, and uptime for each session
 Where a user runs `boss rm <workspace>`, the CLI shall kill
 all sessions in that workspace and remove the workspace
 directory. When active sessions exist, the CLI shall prompt
-for confirmation. The CLI shall refuse `boss rm ~` and shall
-exit non-zero when workspace argument is missing
+for confirmation; when the user declines, the CLI shall print
+`Aborted.` and exit zero. The CLI shall refuse `boss rm ~` and
+shall exit non-zero when workspace argument is missing
 ([DR-002 §6](../../decisions/002-iteron-cli-commands.md#6-boss-rm-workspace)).
 
 ## Error Handling
