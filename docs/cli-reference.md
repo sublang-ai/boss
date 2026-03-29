@@ -76,10 +76,10 @@ boss init [--image <url>] [-y, --yes]
 2. Check/install Podman
 3. Initialize and start Podman machine (macOS)
 4. Verify rootless mode
-5. Pull OCI image
-6. Create `boss-data` volume
-7. Write `~/.boss/config.toml`
-8. Write `~/.boss/.env` template
+5. Write `~/.boss/config.toml`
+6. Write `~/.boss/.env` template
+7. Pull OCI image (from config)
+8. Create `boss-data` volume
 
 ### Examples
 
@@ -269,7 +269,8 @@ No workspaces or sessions.
 
 | Code | Meaning |
 | --- | --- |
-| 0 | Always |
+| 0 | Sessions listed (or none exist) |
+| 1 | Container is not running |
 
 ---
 
@@ -309,5 +310,5 @@ boss rm myproject
 
 | Code | Meaning |
 | --- | --- |
-| 0 | Workspace removed |
-| 1 | Missing argument, invalid name, home directory, or user aborted |
+| 0 | Workspace removed or user aborted |
+| 1 | Missing argument, invalid name, home directory, or container not running |
