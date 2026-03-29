@@ -10,7 +10,7 @@ by cross-cutting audit of `specs/items/`, CLI source, and `docs/`.
 
 ## Deliverables
 
-- [ ] LCD package has a `user/lifecycle.md` covering `init`, `start`,
+- [x] LCD package has a `user/lifecycle.md` covering `init`, `start`,
       and `stop` user-visible behavior
 - [ ] `docs/cli-reference.md` exit-code tables match specs and code
 - [ ] `docs/install.md` reflects current version and `init` behavior
