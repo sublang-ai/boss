@@ -61,7 +61,7 @@ to write to user-owned directories under `~/.local`:
 The Dockerfile `ENV` shall set `PATH` to the following complete prefix in
 this order, before the system `$PATH`:
 
-```
+```shell
 $HOME/.local/share/mise/shims:$HOME/.local/bin:$HOME/.local/share/npm-global/bin:$HOME/.local/share/cargo/bin
 ```
 
@@ -133,7 +133,7 @@ layer (not on the volume). Its flag-handling behavior shall be:
 
 The context line emitted on successful dispatch shall be:
 
-```
+```shell
 # rootless: sudo is a no-op shim; running as boss
 ```
 
