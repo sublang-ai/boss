@@ -19,7 +19,7 @@ by cross-cutting audit of `specs/items/`, CLI source, and `docs/`.
 - [x] SAND-8 / SAND-64 (image-size gate) removal is clean
 - [x] `boss scaffold` has a spec package
 - [x] DR-002 acknowledges `scaffold` as the seventh command
-- [ ] LCD-6 moved to SAND to resolve META-13 package-boundary violation
+- [x] LCD-6 moved to SAND to resolve META-13 package-boundary violation
 
 ## Tasks
 

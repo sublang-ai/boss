@@ -49,23 +49,15 @@ processes in the container environment
 
 ### LCD-5
 
-Where `boss start` is invoked with `[auth.ssh] mode = "keyfile"`,
-the command shall inject each configured host key into an ephemeral
-tmpfs inside the container and write an `IdentityFile` directive per
-key to a managed include file (`~/.ssh/config.d/boss.conf`),
-preserving any user SSH config. SSH tries keys in the order listed
-in `keyfiles`. When SSH is off or unconfigured, the managed file
-shall be removed to prevent stale `IdentityFile` directives from
-persisting on the volume
-([DR-003 §2](../../decisions/003-runtime-profiled-auth.md#2-local-profile)).
-
-### LCD-6
-
-The sandbox image shall pre-seed `/etc/ssh/ssh_known_hosts` with
-GitHub and GitLab.com host keys, enforce `StrictHostKeyChecking yes`,
-and include `Include /home/boss/.ssh/config.d/*.conf` so that
-managed per-user config from [LCD-5](#lcd-5) participates in SSH
-resolution — all via `/etc/ssh/ssh_config.d/boss.conf`
+Where the sandbox image provides SSH config include support
+([SAND-111](../dev/sandbox-image.md#sand-111)) and `boss start` is
+invoked with `[auth.ssh] mode = "keyfile"`, the command shall inject
+each configured host key into an ephemeral tmpfs inside the container
+and write an `IdentityFile` directive per key to a managed include
+file (`~/.ssh/config.d/boss.conf`), preserving any user SSH config.
+SSH tries keys in the order listed in `keyfiles`. When SSH is off or
+unconfigured, the managed file shall be removed to prevent stale
+`IdentityFile` directives from persisting on the volume
 ([DR-003 §2](../../decisions/003-runtime-profiled-auth.md#2-local-profile)).
 
 ## Tool Provisioning

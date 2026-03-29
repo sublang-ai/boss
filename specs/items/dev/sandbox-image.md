@@ -246,6 +246,17 @@ entrypoint reconciliation shall reconcile them using the
 on-demand config+lockfile, following the same locked-install
 pattern as baseline system tools.
 
+## SSH Configuration
+
+### SAND-111
+
+Where the sandbox image is built, `/etc/ssh/ssh_config.d/boss.conf`
+shall pre-seed `/etc/ssh/ssh_known_hosts` with GitHub and
+GitLab.com host keys, enforce `StrictHostKeyChecking yes`, and
+include `Include /home/boss/.ssh/config.d/*.conf` so that managed
+per-user config participates in SSH resolution
+([DR-003 §2](../../decisions/003-runtime-profiled-auth.md#2-local-profile)).
+
 ## DR-005 Package Manager Environment
 
 ### SAND-31

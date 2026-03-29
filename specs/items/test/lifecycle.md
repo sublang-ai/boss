@@ -80,14 +80,14 @@ Where `boss start` is invoked with SSH auth off or unconfigured,
 
 ### LCD-58
 
-Verifies: [LCD-6](../dev/lifecycle.md#lcd-6)
+Verifies: [SAND-111](../dev/sandbox-image.md#sand-111)
 
 Where `boss-sandbox:<tag>` is built, `/etc/ssh/ssh_known_hosts`
 shall contain host keys for `github.com` and `gitlab.com`, and
 `/etc/ssh/ssh_config.d/boss.conf` shall include
 `StrictHostKeyChecking yes` and
 `Include /home/boss/.ssh/config.d/*.conf`
-([LCD-6](../dev/lifecycle.md#lcd-6)).
+([SAND-111](../dev/sandbox-image.md#sand-111)).
 
 ## Tool Provisioning
 
