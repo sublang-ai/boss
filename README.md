@@ -92,7 +92,7 @@ Then loop back to the next decision or iteration.
 ## Documentation
 
 - [Installation Guide](docs/install.md) — prerequisites, setup, platform notes
-- [CLI Reference](docs/cli-reference.md) — all 7 commands with options, examples, and exit codes
+- [CLI Reference](docs/cli-reference.md) — all 6 commands with options, examples, and exit codes
 - [Agent Configuration](docs/agents.md) — authentication, autonomy settings, API keys
 - [Workspace Guide](docs/workspaces.md) — creating, listing, and removing workspaces
 - [Tmux Quick Reference](docs/tmux.md) — detach, reattach, pane splits, scrollback

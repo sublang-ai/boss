@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- **`boss scaffold` subcommand**: Spec scaffolding is no longer part of Boss.
+
 ## [0.4.0] - 2026-03-08
 
 ### Added
