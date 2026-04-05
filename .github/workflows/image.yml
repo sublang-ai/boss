@@ -155,7 +155,7 @@ jobs:
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
 
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.34.0
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.35.0
         with:
           image-ref: ${{ needs.build-push-release.outputs.scan_tag }}
           severity: CRITICAL,HIGH
@@ -165,7 +165,7 @@ jobs:
 
       - name: Run Trivy (SARIF)
         if: always()
-        uses: aquasecurity/trivy-action@0.34.0
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.35.0
         with:
           image-ref: ${{ needs.build-push-release.outputs.scan_tag }}
           severity: CRITICAL,HIGH
@@ -191,7 +191,7 @@ jobs:
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
 
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.34.0
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.35.0
         with:
           image-ref: ${{ needs.build-push-dev.outputs.scan_tag }}
           severity: CRITICAL,HIGH
@@ -201,7 +201,7 @@ jobs:
 
       - name: Run Trivy (SARIF)
         if: always()
-        uses: aquasecurity/trivy-action@0.34.0
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.35.0
         with:
           image-ref: ${{ needs.build-push-dev.outputs.scan_tag }}
           severity: CRITICAL,HIGH
