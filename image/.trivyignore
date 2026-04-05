@@ -74,3 +74,15 @@ CVE-2026-31802
 
 # docker/cli: Windows privilege escalation (fixed in 29.2.0)
 CVE-2025-15558
+
+# systemd/libudev1: arbitrary code execution or DoS via spurious IPC
+CVE-2026-29111
+
+# ncurses: buffer overflow may lead to arbitrary code execution
+CVE-2025-69720
+
+# openssh-client: privilege escalation via scp legacy protocol
+CVE-2026-35385
+
+# picomatch: ReDoS via crafted extglob patterns (fixed in 4.0.4)
+CVE-2026-33671
