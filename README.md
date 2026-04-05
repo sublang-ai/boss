@@ -13,17 +13,15 @@ Delegate dev loops to Claude Code, Codex CLI, Gemini CLI, OpenCode or any AI cod
 
 ## Quick Start
 
-Pick the path that fits your setup:
-
 Install Boss globally to launch AI agents in an isolated Podman container.
 
-#### Prerequisites
+### Prerequisites
 
 - Node.js >= 18
 - Podman (installed automatically by `boss init`, or install manually)
 - One auth method for the agent(s) you use: subscription/device auth (recommended) or API key fallback
 
-#### Setup
+### Setup
 
 ```bash
 # Install Boss globally
@@ -36,7 +34,7 @@ boss init
 # Edit ~/.boss/.env if you prefer key-based auth
 ```
 
-#### Run
+### Run
 
 ```bash
 # Start the sandbox container
@@ -59,7 +57,7 @@ Then authenticate in-session (recommended), or set fallback API keys in `~/.boss
 
 If any step fails, see [Troubleshooting](docs/troubleshooting.md).
 
-#### Supported Agents
+### Supported Agents
 
 Built-in (no configuration needed):
 
@@ -72,7 +70,7 @@ Built-in (no configuration needed):
 
 For full auth details and caveats, see [Agent Configuration](docs/agents.md).
 
-#### Configuration
+### Configuration
 
 | File | Purpose |
 | --- | --- |
@@ -98,3 +96,7 @@ We welcome contributions of all kinds. If you'd like to help:
 - [Open an issue](https://github.com/sublang-ai/boss/issues) for bugs or feature requests.
 - [Open a PR](https://github.com/sublang-ai/boss/pulls) for fixes or improvements.
 - Discuss on [Discord](https://discord.gg/XxTPjNqy9g) for support or new ideas.
+
+## License
+
+Licensed under the [Apache License 2.0](LICENSE).
