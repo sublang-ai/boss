@@ -79,16 +79,6 @@ For full auth details and caveats, see [Agent Configuration](docs/agents.md).
 | `~/.boss/config.toml` | Container settings, [SSH keys](docs/agents.md#ssh-keys) |
 | `~/.boss/.env` | Auth env vars (subscription tokens and API-key fallbacks; loaded on `start`) |
 
-## Workflow
-
-<img src="docs/assets/workflow.png" alt="Boss Workflow" width="530" height="510" style="max-width: 100%; height: auto">
-
-1. **Make Decisions** — Discuss requirements and architecture with AI. It generates decision records in `specs/decisions/`.
-2. **Plan Iterations** — Break down work into iteration specs with AI. It generates iteration records in `specs/iterations/`.
-3. **AI Executes** — Let AI agents complete the tasks autonomously. They generate code and update `specs/`.
-
-Then loop back to the next decision or iteration.
-
 ## Documentation
 
 - [Installation Guide](docs/install.md) — prerequisites, setup, platform notes
