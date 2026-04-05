@@ -97,7 +97,7 @@ Extend `.github/workflows/ci.yml` with four jobs:
 - **build**: existing — `npm run build` on Node [18, 20, 22]
 - **test-unit**: parallel with build — `npm test` on Node [20, 22] (Vitest 4 requires Node >=20)
 - **test-integration**: after build — `npm run test:integration` on Ubuntu, Node 22 only, `alpine:latest` (fast smoke test, Podman pre-installed)
-- **test-integration-image**: after build — `npm run test:integration` on Ubuntu, Node 22, with `BOSS_TEST_IMAGE=ghcr.io/sublang-dev/boss-sandbox:dev-latest` (validates CLI against real sandbox image; macOS omitted because GitHub Actions runners lack nested virtualization for Podman machine)
+- **test-integration-image**: after build — `npm run test:integration` on Ubuntu, Node 22, with `BOSS_TEST_IMAGE=ghcr.io/sublang-ai/boss-sandbox:dev-latest` (validates CLI against real sandbox image; macOS omitted because GitHub Actions runners lack nested virtualization for Podman machine)
 
 ## Acceptance criteria
 

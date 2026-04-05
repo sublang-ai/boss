@@ -28,11 +28,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sublang-dev/boss.git"
+    "url": "git+https://github.com/sublang-ai/boss.git"
   },
-  "homepage": "https://github.com/sublang-dev/boss#readme",
+  "homepage": "https://github.com/sublang-ai/boss#readme",
   "bugs": {
-    "url": "https://github.com/sublang-dev/boss/issues"
+    "url": "https://github.com/sublang-ai/boss/issues"
   },
   "license": "Apache-2.0",
   "publishConfig": {

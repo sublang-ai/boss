@@ -160,11 +160,11 @@ Install with `npm install -g @sublang/iteron`.
 - GitHub Actions CI workflow
 - Project specifications structure
 
-[Unreleased]: https://github.com/sublang-dev/boss/compare/v0.5.0...HEAD
-[0.5.0]: https://github.com/sublang-dev/boss/compare/v0.4.0...v0.5.0
-[0.4.0]: https://github.com/sublang-dev/boss/compare/v0.3.0...v0.4.0
-[0.3.0]: https://github.com/sublang-dev/boss/compare/v0.2.0...v0.3.0
-[0.2.0]: https://github.com/sublang-dev/boss/compare/v0.1.3...v0.2.0
-[0.1.3]: https://github.com/sublang-dev/boss/compare/v0.1.2...v0.1.3
-[0.1.2]: https://github.com/sublang-dev/boss/compare/v0.1.1...v0.1.2
-[0.1.1]: https://github.com/sublang-dev/boss/releases/tag/v0.1.1
+[Unreleased]: https://github.com/sublang-ai/boss/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/sublang-ai/boss/compare/v0.4.0...v0.5.0
+[0.4.0]: https://github.com/sublang-ai/boss/compare/v0.3.0...v0.4.0
+[0.3.0]: https://github.com/sublang-ai/boss/compare/v0.2.0...v0.3.0
+[0.2.0]: https://github.com/sublang-ai/boss/compare/v0.1.3...v0.2.0
+[0.1.3]: https://github.com/sublang-ai/boss/compare/v0.1.2...v0.1.3
+[0.1.2]: https://github.com/sublang-ai/boss/compare/v0.1.1...v0.1.2
+[0.1.1]: https://github.com/sublang-ai/boss/releases/tag/v0.1.1

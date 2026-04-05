@@ -52,7 +52,7 @@ describe('exported constants', () => {
     const { writeConfig, readConfig } = await import('../../src/utils/config.js');
     await writeConfig();
     const config = await readConfig();
-    expect(config.container.image).toBe('ghcr.io/sublang-dev/boss-sandbox:latest');
+    expect(config.container.image).toBe('ghcr.io/sublang-ai/boss-sandbox:latest');
   });
 });
 
@@ -103,7 +103,7 @@ describe('writeConfig / readConfig', () => {
     const { updateConfigImage, readConfig } = await import('../../src/utils/config.js');
     const indentedToml = `[container]
   name = "boss-sandbox"
-  image = "ghcr.io/sublang-dev/boss-sandbox:latest"
+  image = "ghcr.io/sublang-ai/boss-sandbox:latest"
   memory = "16g"
 
 [auth]
@@ -122,7 +122,7 @@ describe('writeConfig / readConfig', () => {
     const { updateConfigImage, readConfig } = await import('../../src/utils/config.js');
     const singleQuotedToml = `[container]
 name = "boss-sandbox"
-image = 'ghcr.io/sublang-dev/boss-sandbox:latest'
+image = 'ghcr.io/sublang-ai/boss-sandbox:latest'
 memory = "16g"
 
 [auth]
@@ -181,7 +181,7 @@ describe('auth config (DR-003)', () => {
     const { readConfig } = await import('../../src/utils/config.js');
     const toml = `[container]
 name = "boss-sandbox"
-image = "ghcr.io/sublang-dev/boss-sandbox:latest"
+image = "ghcr.io/sublang-ai/boss-sandbox:latest"
 memory = "16g"
 
 [auth]
@@ -203,7 +203,7 @@ keyfiles = ["~/.ssh/id_rsa", "~/.ssh/id_ed25519"]
     const { readConfig } = await import('../../src/utils/config.js');
     const toml = `[container]
 name = "boss-sandbox"
-image = "ghcr.io/sublang-dev/boss-sandbox:latest"
+image = "ghcr.io/sublang-ai/boss-sandbox:latest"
 memory = "16g"
 
 [auth]
@@ -223,7 +223,7 @@ keyfile = "~/.ssh/id_rsa"
     const { readConfig } = await import('../../src/utils/config.js');
     const toml = `[container]
 name = "boss-sandbox"
-image = "ghcr.io/sublang-dev/boss-sandbox:latest"
+image = "ghcr.io/sublang-ai/boss-sandbox:latest"
 memory = "16g"
 
 [auth]
@@ -241,7 +241,7 @@ keyfiles = []
     const { readConfig } = await import('../../src/utils/config.js');
     const toml = `[container]
 name = "boss-sandbox"
-image = "ghcr.io/sublang-dev/boss-sandbox:latest"
+image = "ghcr.io/sublang-ai/boss-sandbox:latest"
 memory = "16g"
 `;
     writeFileSync(join(tmpDir, 'config.toml'), toml, 'utf-8');
@@ -264,7 +264,7 @@ memory = "16g"
     const { readConfig } = await import('../../src/utils/config.js');
     const toml = `[container]
 name = "boss-sandbox"
-image = "ghcr.io/sublang-dev/boss-sandbox:latest"
+image = "ghcr.io/sublang-ai/boss-sandbox:latest"
 memory = "16g"
 
 [auth]
@@ -278,7 +278,7 @@ profile = "aws"
     const { readConfig } = await import('../../src/utils/config.js');
     const toml = `[container]
 name = "boss-sandbox"
-image = "ghcr.io/sublang-dev/boss-sandbox:latest"
+image = "ghcr.io/sublang-ai/boss-sandbox:latest"
 memory = "16g"
 
 [auth]
@@ -295,7 +295,7 @@ mode = "agent-forwarding"
     const { readConfig } = await import('../../src/utils/config.js');
     const toml = `[container]
 name = "boss-sandbox"
-image = "ghcr.io/sublang-dev/boss-sandbox:latest"
+image = "ghcr.io/sublang-ai/boss-sandbox:latest"
 memory = "16g"
 
 [auth]

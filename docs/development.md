@@ -6,7 +6,7 @@
 ## Running from Source
 
 ```bash
-git clone https://github.com/sublang-dev/boss.git
+git clone https://github.com/sublang-ai/boss.git
 cd boss
 npm install && npm run build
 npm link
@@ -19,20 +19,20 @@ npm link
 CI publishes a development image when `image/` files change on `main` or via manual workflow dispatch. To use it:
 
 ```bash
-boss init --image ghcr.io/sublang-dev/boss-sandbox:dev-latest
+boss init --image ghcr.io/sublang-ai/boss-sandbox:dev-latest
 ```
 
 If you have already initialized, edit `~/.boss/config.toml`:
 
 ```toml
 [container]
-image = "ghcr.io/sublang-dev/boss-sandbox:dev-latest"
+image = "ghcr.io/sublang-ai/boss-sandbox:dev-latest"
 ```
 
 Then pull and restart:
 
 ```bash
-podman pull ghcr.io/sublang-dev/boss-sandbox:dev-latest
+podman pull ghcr.io/sublang-ai/boss-sandbox:dev-latest
 boss stop && boss start
 ```
 

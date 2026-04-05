@@ -26,7 +26,7 @@ boss init [--image <url>] [-y, --yes]
 
 | Option | Description | Default |
 | --- | --- | --- |
-| `--image <url>` | Custom OCI image URL | `ghcr.io/sublang-dev/boss-sandbox:latest` |
+| `--image <url>` | Custom OCI image URL | `ghcr.io/sublang-ai/boss-sandbox:latest` |
 | `-y, --yes` | Skip confirmation prompts | Prompt |
 
 ### Behavior

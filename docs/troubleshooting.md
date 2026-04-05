@@ -224,7 +224,7 @@ User-phase reconciliation is skipped when user tools are declared without
 1. Check internet connectivity
 2. Verify you can reach the registry:
    ```bash
-   podman pull ghcr.io/sublang-dev/boss-sandbox:latest
+   podman pull ghcr.io/sublang-ai/boss-sandbox:latest
    ```
 3. If behind a proxy, configure Podman's proxy settings:
    ```bash

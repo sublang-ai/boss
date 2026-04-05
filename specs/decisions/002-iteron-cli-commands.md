@@ -126,7 +126,7 @@ Remove a workspace directory and kill any running agent sessions in it.
 - Status: `podman ps | grep boss-sandbox`
 - Shell in container: `podman exec -it boss-sandbox bash`
 - Workspace contents: Navigate with shell once inside (e.g., `boss open myproject` then `ls`)
-- Image update: `podman pull ghcr.io/sublang-dev/boss-sandbox:latest && boss stop && boss start`
+- Image update: `podman pull ghcr.io/sublang-ai/boss-sandbox:latest && boss stop && boss start`
 
 ## Consequences
 

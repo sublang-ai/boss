@@ -31,7 +31,7 @@ Already covered by integration tests in `tests/integration/start-stop.test.ts` (
 
 ### 2. Vulnerability scan
 
-- Run Trivy on the OCI image: `trivy image ghcr.io/sublang-dev/boss-sandbox:<version>`
+- Run Trivy on the OCI image: `trivy image ghcr.io/sublang-ai/boss-sandbox:<version>`
 - CI integration: Trivy scan step in `.github/workflows/image.yml` fails on CRITICAL/HIGH outside `image/.trivyignore`
 - Local scan: `scripts/scan-image.sh` runs Trivy against local or registry image
 - Expected: no critical or high severity CVEs outside the accepted list (`image/.trivyignore`)

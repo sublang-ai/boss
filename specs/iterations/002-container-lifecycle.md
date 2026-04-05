@@ -85,7 +85,7 @@ Per [DR-002 §3](../decisions/002-iteron-cli-commands.md#3-boss-stop):
 ```toml
 [container]
 name = "boss-sandbox"
-image = "ghcr.io/sublang-dev/boss-sandbox:latest"
+image = "ghcr.io/sublang-ai/boss-sandbox:latest"
 memory = "16g"
 ```
 
@@ -118,7 +118,7 @@ GEMINI_API_KEY=
 | 12 | Set `ANTHROPIC_API_KEY=sk-test-123` in `.env`, `boss start`, `podman exec boss-sandbox printenv ANTHROPIC_API_KEY` | `sk-test-123` |
 | 13 | `boss start`, `podman exec boss-sandbox touch /home/boss/persist-test`, `boss stop`, `boss start`, `podman exec boss-sandbox test -f /home/boss/persist-test` | Exit 0 (file persists across restart) |
 | 14 | `boss --help` | Lists `init`, `start`, `stop` subcommands with one-line descriptions |
-| 15 | Existing `config.toml` has `image = "docker.io/library/alpine:latest"`, run `boss init` | `config.toml` image is reconciled to `ghcr.io/sublang-dev/boss-sandbox:latest` |
+| 15 | Existing `config.toml` has `image = "docker.io/library/alpine:latest"`, run `boss init` | `config.toml` image is reconciled to `ghcr.io/sublang-ai/boss-sandbox:latest` |
 | 16 | Existing `config.toml` has custom image, run `boss init` without `--image` | Custom image remains unchanged |
 | 17 | Existing `config.toml` has custom image, run `boss init --image <url>` | `config.toml` image updated to `<url>` |
 

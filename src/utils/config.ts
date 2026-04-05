@@ -71,7 +71,7 @@ export async function ensureConfigDir(): Promise<void> {
 }
 
 function configTemplate(image?: string): string {
-  const img = image ?? 'ghcr.io/sublang-dev/boss-sandbox:latest';
+  const img = image ?? 'ghcr.io/sublang-ai/boss-sandbox:latest';
   return `# Boss configuration — all available settings
 # Uncomment and edit values as needed.
 

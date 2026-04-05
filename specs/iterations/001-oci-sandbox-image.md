@@ -53,7 +53,7 @@ Install each agent via mise ([DR-004](../decisions/004-user-tool-provisioning.md
 
 - Use `podman manifest` or `docker buildx` for multi-platform builds
 - Target: `linux/amd64`, `linux/arm64` (Graviton + Apple Silicon)
-- Tag convention: `ghcr.io/sublang-dev/boss-sandbox:<version>`
+- Tag convention: `ghcr.io/sublang-ai/boss-sandbox:<version>`
 - Build script: `scripts/build-image.sh` wrapping the multi-arch build
 
 ### 4. Filesystem layout for security

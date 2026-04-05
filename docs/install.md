@@ -36,7 +36,7 @@ boss init
 4. **Verifies rootless mode** — refuses to proceed if Podman runs as root
 5. **Generates config** at `~/.boss/config.toml`
 6. **Generates env template** at `~/.boss/.env`
-7. **Pulls the sandbox image** (`ghcr.io/sublang-dev/boss-sandbox:latest`)
+7. **Pulls the sandbox image** (`ghcr.io/sublang-ai/boss-sandbox:latest`)
 8. **Creates the `boss-data` volume** for persistent workspace storage
 
 Expected output (on macOS with Podman already installed):
@@ -49,7 +49,7 @@ Detected platform: darwin/arm64
   Rootless mode (done)
   Config ~/.boss/config.toml (created)
   Env template ~/.boss/.env (created)
-  Image ghcr.io/sublang-dev/boss-sandbox:latest (done)
+  Image ghcr.io/sublang-ai/boss-sandbox:latest (done)
   Volume "boss-data" (created)
 
 Initialization complete.
